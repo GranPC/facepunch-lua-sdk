@@ -33,7 +33,7 @@ threadPageMemberPattern = "" ..
 
 -------------------------------------------------------------------------------
 -- memberSocialLinkPattern
--- Purpose: Pattern for filling the links table on a member from a thread page.
+-- Purpose: Pattern for filling the links table on a member from a thread page
 -------------------------------------------------------------------------------
 memberSocialLinkPattern = "" ..
 "href=\"(.-)\"><img src=\"/fp/social/(.-)%."
@@ -85,8 +85,8 @@ function getMembersInPage( threadPageURL )
 				if ( avatar == "" ) then
 					member.avatar		= nil
 				else
-					for URL in string.gmatch( avatar, ".-img src=\"(/avatar/.-)\"" ) do
-						avatar			= URL
+					for url in string.gmatch( avatar, ".-img src=\"(/avatar/.-)\"" ) do
+						avatar			= url
 					end
 					member.avatar		= "http://www.facepunch.com" .. avatar
 				end
@@ -95,8 +95,8 @@ function getMembersInPage( threadPageURL )
 				member.postCount		= string.gsub( member.postCount, "^%s*(.-)%s*$", "%1" )
 				member.postCount		= tonumber( string.gsub( member.postCount, ",", "" ), 10 )
 
-				for url, name in string.gmatch(links, memberSocialLinkPattern) do
-					member.links[name] = url
+				for url, name in string.gmatch( links, memberSocialLinkPattern ) do
+					member.links[ name ] = url
 				end
 				table.insert( t, member )
 			else
