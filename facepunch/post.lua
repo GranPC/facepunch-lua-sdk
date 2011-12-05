@@ -48,15 +48,6 @@ local metatable = {
 setmetatable( _M, metatable )
 
 -------------------------------------------------------------------------------
--- post:getMember()
--- Purpose: Returns the member who posted this post
--- Output: member
--------------------------------------------------------------------------------
-function post:getMember()
-	return member( facepunch.baseURL .. memberURL )
-end
-
--------------------------------------------------------------------------------
 -- tile:__tostring()
 -- Purpose: __tostring metamethod for post
 -------------------------------------------------------------------------------
