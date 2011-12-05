@@ -1,5 +1,6 @@
 local facepunch = require( "facepunch" )
 local member = require( "facepunch.member" )
+local setmetatable = setmetatable
 
 module( "facepunch.post" )
 
@@ -14,7 +15,7 @@ local post = {}
 -- Purpose: Class metatable
 -------------------------------------------------------------------------------
 __metatable = {
-	__index = post
+	__index = post,
 	__type = "post"
 }
 
@@ -25,11 +26,9 @@ __metatable = {
 -------------------------------------------------------------------------------
 function new()
 	local t = {
-		memberURL = nil,
-		username = nil,
-		plaintext = nil,
-		postnumber = nil,
-		ratings = nil
+		postDate = nil,
+		link = nil,
+		postNumber = nil
 	}
 	setmetatable( t, __metatable )
 	return t
@@ -52,5 +51,6 @@ setmetatable( _M, metatable )
 -- Purpose: __tostring metamethod for post
 -------------------------------------------------------------------------------
 function __metatable:__tostring()
-	return "post: " .. self.postnumber
+	if not self.postNumber then return "invalid post" end
+	return "post: " .. self.postNumber
 end
