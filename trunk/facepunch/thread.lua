@@ -1,6 +1,7 @@
 local error = error
 local facepunch = require( "facepunch" )
 local member = require( "facepunch.member" )
+local post = require( "facepunch.post" )
 local pairs = pairs
 local string = string
 local table = table
@@ -39,8 +40,21 @@ memberSocialLinkPattern = "" ..
 "href=\"(.-)\"><img src=\"/fp/social/(.-)%."
 
 -------------------------------------------------------------------------------
+-- threadPagePostPattern
+-- Purpose: Pattern for filling post objects on a thread page
+-------------------------------------------------------------------------------
+threadPagePostPattern = "" ..
+-- Post Date
+"\"date\">(.-)</span>" ..
+-- Link to Post
+".-post%d-\" href=\"(.-)\"" ..
+-- Post Number
+".-postcount%d-\" name=\"(.-)\""
+
+-------------------------------------------------------------------------------
 -- thread.getMembersInPage()
 -- Purpose: Returns all members that have posted on a given thread page
+-- Input: threadPageURL - URL to a single page in the thread
 -- Output: table of members
 -------------------------------------------------------------------------------
 function getMembersInPage( threadPageURL )
@@ -102,6 +116,31 @@ function getMembersInPage( threadPageURL )
 			else
 				matched = false
 			end
+		end
+		return t
+	else
+		error( "could not retrieve thread page!", 2 )
+	end
+end
+
+-------------------------------------------------------------------------------
+-- thread.getPostsInPage()
+-- Purpose: Returns all posts on a given thread page
+-- Input: threadPageURL - URL to a single page in the thread
+-- Output: table of posts
+-------------------------------------------------------------------------------
+function getPostsInPage( threadPageURL )
+	local threadPage, returnCode = facepunch.request( threadPageURL )
+	if ( returnCode == 200 ) then
+		local t = {}
+		for postDate,
+			link,
+			postNumber in string.gmatch( threadPage, threadPagePostPattern ) do
+			local post		= post()
+			post.postDate	= postDate
+			post.link		= facepunch.baseURL .. link
+			post.postNumber	= postNumber
+			table.insert( t, post )
 		end
 		return t
 	else

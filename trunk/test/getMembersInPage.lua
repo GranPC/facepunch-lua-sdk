@@ -16,4 +16,5 @@ for _, member in pairs( thread.getMembersInPage( "http://www.facepunch.com/threa
 	for name, link in pairs( member.links ) do
 		print( "\t\t"..name..": "..link )
 	end
+	print( "\n" )
 end
