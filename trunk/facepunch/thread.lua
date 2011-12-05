@@ -1,5 +1,5 @@
 local error = error
-local http = require( "socket.http" )
+local facepunch = require( "facepunch" )
 local member = require( "facepunch.member" )
 local pairs = pairs
 local string = string
@@ -44,7 +44,7 @@ memberSocialLinkPattern = "" ..
 -- Output: table of members
 -------------------------------------------------------------------------------
 function getMembersInPage( threadPageURL )
-	local threadPage, returnCode = http.request( threadPageURL )
+	local threadPage, returnCode = facepunch.request( threadPageURL )
 	if ( returnCode == 200 ) then
 		local t = {}
 		local matched = false
@@ -88,7 +88,7 @@ function getMembersInPage( threadPageURL )
 					for url in string.gmatch( avatar, ".-img src=\"(/avatar/.-)\"" ) do
 						avatar			= url
 					end
-					member.avatar		= "http://www.facepunch.com" .. avatar
+					member.avatar		= facepunch.rootURL .. avatar
 				end
 				member.joinDate			= string.gsub( joinDate, "^%s*(.-)%s*$", "%1" )
 				member.postCount		= postCount
