@@ -42,14 +42,38 @@ memberSocialLinkPattern = "" ..
 -------------------------------------------------------------------------------
 -- threadPagePostPattern
 -- Purpose: Pattern for filling post objects on a thread page
+-- It also gets the entire post body, which is necessary for the
+-- postRatingResultSpanPattern, since posts without any ratings won't have a
+-- rating_results span, and then this pattern wouldn't return those posts
 -------------------------------------------------------------------------------
 threadPagePostPattern = "" ..
+-- Post Beginning
+"<li class=.- id=\"post.-(" ..
 -- Post Date
-"\"date\">(.-)</span>" ..
+".-\"date\">(.-)</span>" ..
 -- Link to Post
 ".-post%d-\" href=\"(.-)\"" ..
 -- Post Number
-".-postcount%d-\" name=\"(.-)\""
+".-postcount%d-\" name=\"(.-)\"" ..
+-- End
+".-</li>)"
+
+
+-------------------------------------------------------------------------------
+-- postRatingResultPattern
+-- Purpose: Pattern for getting the rating_results div, which may not be there
+-- if the post has no ratings.
+-------------------------------------------------------------------------------
+postRatingResultSpanPattern = "" ..
+"class=\"rating_results\" id=\"rating_.-\">.-<span>(.-)%(list%)</a>.-</span>"
+
+-------------------------------------------------------------------------------
+-- postRatingResultPattern
+-- Purpose: Pattern for filling the ratings table on a post
+-------------------------------------------------------------------------------
+postRatingResultPattern = "" ..
+"<img src=\".-\" alt=\"(.-)\" />.-<strong>(%d-)</strong>"
+
 
 -------------------------------------------------------------------------------
 -- thread.getMembersInPage()
@@ -133,13 +157,23 @@ function getPostsInPage( threadPageURL )
 	local threadPage, returnCode = facepunch.request( threadPageURL )
 	if ( returnCode == 200 ) then
 		local t = {}
-		for postDate,
+		for fullPost,
+			postDate,
 			link,
-			postNumber in string.gmatch( threadPage, threadPagePostPattern ) do
+			postNumber
+			in string.gmatch( threadPage, threadPagePostPattern ) do
 			local post		= post()
 			post.postDate	= postDate
 			post.link		= facepunch.baseURL .. link
 			post.postNumber	= postNumber
+
+			local postRatings = string.match( fullPost, postRatingResultSpanPattern )
+			if ( postRatings ) then
+				for name, amount in string.gmatch( postRatings, postRatingResultPattern ) do
+					post.postRatings[ name ] = tonumber( amount )
+				end
+			end
+
 			table.insert( t, post )
 		end
 		return t

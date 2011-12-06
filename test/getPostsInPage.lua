@@ -9,5 +9,9 @@ for _, post in pairs( thread.getPostsInPage( "http://www.facepunch.com/threads/1
 	print( "      post date: " .. tostring( post.postDate ) )
 	print( "      link: " .. tostring( post.link ) )
 	print( "      post number: " .. tostring( post.postNumber ) )
+	print( "      post ratings: ")
+	for name, amount in pairs( post.postRatings ) do
+		print( "            " .. name .. " x " .. amount )
+	end
 	print( "\n" )
 end
