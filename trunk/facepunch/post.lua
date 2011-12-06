@@ -28,7 +28,8 @@ function new()
 	local t = {
 		postDate = nil,
 		link = nil,
-		postNumber = nil
+		postNumber = nil,
+		postRatings = {}
 	}
 	setmetatable( t, __metatable )
 	return t
