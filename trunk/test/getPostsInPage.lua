@@ -13,5 +13,9 @@ for _, post in pairs( thread.getPostsInPage( "http://www.facepunch.com/threads/1
 	for name, amount in pairs( post.postRatings ) do
 		print( "            " .. name .. " x " .. amount )
 	end
+	print( "      post rating keys: ")
+	for rating, key in pairs( post.postRatingKeys ) do
+		print( "            " .. rating .. ": " .. key )
+	end
 	print( "\n" )
 end

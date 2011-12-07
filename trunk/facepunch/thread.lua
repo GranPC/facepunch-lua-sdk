@@ -60,7 +60,7 @@ threadPagePostPattern = "" ..
 
 
 -------------------------------------------------------------------------------
--- postRatingResultPattern
+-- postRatingResultSpanPattern
 -- Purpose: Pattern for getting the rating_results div, which may not be there
 -- if the post has no ratings.
 -------------------------------------------------------------------------------
@@ -73,6 +73,22 @@ postRatingResultSpanPattern = "" ..
 -------------------------------------------------------------------------------
 postRatingResultPattern = "" ..
 "<img src=\".-\" alt=\"(.-)\" />.-<strong>(%d-)</strong>"
+
+
+-------------------------------------------------------------------------------
+-- postRatingKeyDivPattern
+-- Purpose: Pattern for getting the postrating div, which is not there if you
+-- are not logged in.
+-------------------------------------------------------------------------------
+postRatingKeyDivPattern = "" ..
+"class=\"postrating\" id=\"ratingcontrols_post_.-\">(.-)</div>"
+
+-------------------------------------------------------------------------------
+-- postRatingKeyPattern
+-- Purpose: Pattern for filling the rating key table on a post
+-------------------------------------------------------------------------------
+postRatingKeyPattern = "" ..
+[[<a href="#".-RatePost%( '.-', '.-', '(.-)' %);"><img src=".-" alt="(.-)" /></a>]]
 
 
 -------------------------------------------------------------------------------
@@ -171,6 +187,13 @@ function getPostsInPage( threadPageURL )
 			if ( postRatings ) then
 				for name, amount in string.gmatch( postRatings, postRatingResultPattern ) do
 					post.postRatings[ name ] = tonumber( amount )
+				end
+			end
+			
+			local postRatingKeys = string.match( fullPost, postRatingKeyDivPattern )
+			if ( postRatingKeys ) then 
+				for key, rating in string.gmatch( postRatingKeys, postRatingKeyPattern ) do
+					post.postRatingKeys[ rating ] = key
 				end
 			end
 
