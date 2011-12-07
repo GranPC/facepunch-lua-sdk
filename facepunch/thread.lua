@@ -93,9 +93,10 @@ postRatingKeyPattern = "" ..
 
 -------------------------------------------------------------------------------
 -- thread.getMembersInPage()
--- Purpose: Returns all members that have posted on a given thread page
+-- Purpose: Returns all members that have posted on a given thread page, first
+--			returns 0 if there are no errors or 1 in case of errors
 -- Input: threadPageURL - URL to a single page in the thread
--- Output: table of members
+-- Output: integer, table of members
 -------------------------------------------------------------------------------
 function getMembersInPage( threadPageURL )
 	local threadPage, returnCode = facepunch.request( threadPageURL )
@@ -157,15 +158,16 @@ function getMembersInPage( threadPageURL )
 				matched = false
 			end
 		end
-		return t
+		return 0, t
 	else
-		error( "could not retrieve thread page!", 2 )
+		return 1, nil
 	end
 end
 
 -------------------------------------------------------------------------------
 -- thread.getPostsInPage()
--- Purpose: Returns all posts on a given thread page
+-- Purpose: Returns all posts on a given thread page, first returns 0 if there
+--			are no errors or 1 in case of errors
 -- Input: threadPageURL - URL to a single page in the thread
 -- Output: table of posts
 -------------------------------------------------------------------------------
@@ -180,11 +182,12 @@ function getPostsInPage( threadPageURL )
 			in string.gmatch( threadPage, threadPagePostPattern ) do
 			local post		= post()
 			post.postDate	= postDate
-			post.link		= facepunch.baseURL .. link
+			post.link		= facepunch.baseURL .. string.gsub( link, "&amp;", "&" )
 			post.postNumber	= postNumber
 
 			local postRatings = string.match( fullPost, postRatingResultSpanPattern )
 			if ( postRatings ) then
+				post.postRatings = {}
 				for name, amount in string.gmatch( postRatings, postRatingResultPattern ) do
 					post.postRatings[ name ] = tonumber( amount )
 				end
@@ -199,8 +202,8 @@ function getPostsInPage( threadPageURL )
 
 			table.insert( t, post )
 		end
-		return t
+		return 0, t
 	else
-		error( "could not retrieve thread page!", 2 )
+		return 1, nil
 	end
 end
