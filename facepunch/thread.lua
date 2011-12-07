@@ -1,3 +1,4 @@
+local error = error
 local facepunch = require( "facepunch" )
 local member = require( "facepunch.member" )
 local post = require( "facepunch.post" )
@@ -167,6 +168,28 @@ function getMembersInPage( threadPageURL )
 	else
 		return 1, nil
 	end
+end
+
+-------------------------------------------------------------------------------
+-- thread.getMembersReading()
+-- Purpose: Returns all members reading a given thread
+-- Input: threadPageURL - URL to a single page in the thread
+-- Output: table of members
+-------------------------------------------------------------------------------
+function getMembersReading( threadPageURL )
+	error( "not yet implemented!", 2 )
+end
+
+-------------------------------------------------------------------------------
+-- thread.getPostByID()
+-- Purpose: Returns 0 if the post is found, then the post object, otherwise it
+--			returns 1 and nil
+-- Input: threadPageURL - URL to a single page in the thread
+--		  postID - number of post
+-- Output: integer, post
+-------------------------------------------------------------------------------
+function getPostByID( threadPageURL, postID )
+	error( "not yet implemented!", 2 )
 end
 
 -------------------------------------------------------------------------------
