@@ -49,7 +49,16 @@ local metatable = {
 setmetatable( _M, metatable )
 
 -------------------------------------------------------------------------------
--- tile:__tostring()
+-- post:rate()
+-- Purpose: Rates a post
+-- Input: rating - name of the rating
+-------------------------------------------------------------------------------
+function post:rate( rating )
+	error( "not yet implemented!", 2 )
+end
+
+-------------------------------------------------------------------------------
+-- post:__tostring()
 -- Purpose: __tostring metamethod for post
 -------------------------------------------------------------------------------
 function __metatable:__tostring()
