@@ -13,9 +13,11 @@ for _, member in pairs( members ) do
 	print( "\tavatar: " .. tostring( member.avatar ) )
 	print( "\tjoin date: " .. tostring( member.joinDate ) )
 	print( "\tpost count: " .. tostring( member.postCount ) )
-	print( "\tsocial links: " )
-	for name, link in pairs( member.links ) do
-		print( "\t\t"..name..": "..link )
+	print( "\tsocial links: " .. ( member.links == nil and tostring( member.links ) or "" ) )
+	if ( member.links ) then
+		for name, link in pairs( member.links ) do
+			print( "\t\t"..name..": "..link )
+		end
 	end
 	print( "\n" )
 end

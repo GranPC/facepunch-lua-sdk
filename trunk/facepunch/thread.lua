@@ -1,4 +1,3 @@
-local error = error
 local facepunch = require( "facepunch" )
 local member = require( "facepunch.member" )
 local post = require( "facepunch.post" )
@@ -88,7 +87,7 @@ postRatingKeyDivPattern = "" ..
 -- Purpose: Pattern for filling the rating key table on a post
 -------------------------------------------------------------------------------
 postRatingKeyPattern = "" ..
-[[<a href="#".-RatePost%( '.-', '.-', '(.-)' %);"><img src=".-" alt="(.-)" /></a>]]
+"<a href=\"#\".-RatePost%( '.-', '.-', '(.-)' %);\"><img src=\".-\" alt=\"(.-)\" /></a>"
 
 
 -------------------------------------------------------------------------------
@@ -122,6 +121,8 @@ function getMembersInPage( threadPageURL )
 				member.online			= status == "on"
 				if ( username == displayedUsername ) then
 					member.usergroup	= "Registered User"
+				elseif ( string.find( displayedUsername, "<font color=\"red\">" ) ) then
+					member.usergroup	= "Banned"
 				elseif ( string.find( displayedUsername, "#A06000" ) ) then
 					member.usergroup	= "Gold Member"
 				elseif ( string.find( displayedUsername, "#00aa00" ) ) then
@@ -140,7 +141,7 @@ function getMembersInPage( threadPageURL )
 				if ( avatar == "" ) then
 					member.avatar		= nil
 				else
-					for url in string.gmatch( avatar, ".-img src=\"(/avatar/.-)\"" ) do
+					for url in string.gmatch( avatar, ".-img src=\"(.-)\"" ) do
 						avatar			= url
 					end
 					member.avatar		= facepunch.rootURL .. avatar
@@ -150,9 +151,13 @@ function getMembersInPage( threadPageURL )
 				member.postCount		= string.gsub( member.postCount, "^%s*(.-)%s*$", "%1" )
 				member.postCount		= tonumber( string.gsub( member.postCount, ",", "" ), 10 )
 
+				member.links = {}
+				local hasLinks = false
 				for url, name in string.gmatch( links, memberSocialLinkPattern ) do
+					if ( hasLinks == false ) then hasLinks = true end
 					member.links[ name ] = url
 				end
+				if ( not hasLinks ) then member.links = nil end
 				table.insert( t, member )
 			else
 				matched = false

@@ -3,8 +3,8 @@
 
 local thread = require( "facepunch.thread" )
 
--- Andrew; prints all users who have posted on page 6 of WAYWO December 2011
-local error, posts = thread.getPostsInPage( "http://www.facepunch.com/threads/1144771/6" )
+-- Andrew; prints all users who have posted on page whatever of WAYWO December 2011
+local error, posts = thread.getPostsInPage( "http://www.facepunch.com/threads/1144771/18" )
 for _, post in pairs( posts ) do
 	print( post )
 	print( "      post date: " .. tostring( post.postDate ) )
@@ -17,7 +17,7 @@ for _, post in pairs( posts ) do
 		end
 	end
 	print( "      post rating keys: " .. ( post.postRatingKeys == nil and tostring( post.postRatingKeys ) or "" ) )
-	if ( post.postRatings ) then
+	if ( post.postRatingKeys ) then
 		for rating, key in pairs( post.postRatingKeys ) do
 			print( "            " .. rating .. ": " .. key )
 		end

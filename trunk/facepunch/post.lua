@@ -29,7 +29,7 @@ function new()
 		postDate = nil,
 		link = nil,
 		postNumber = nil,
-		postRatings = nil
+		postRatings = nil,
 		postRatingKeys = nil
 	}
 	setmetatable( t, __metatable )
