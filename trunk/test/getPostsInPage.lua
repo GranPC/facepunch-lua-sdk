@@ -16,9 +16,11 @@ for _, post in pairs( posts ) do
 			print( "            " .. name .. " x " .. amount )
 		end
 	end
-	print( "      post rating keys: ")
-	for rating, key in pairs( post.postRatingKeys ) do
-		print( "            " .. rating .. ": " .. key )
+	print( "      post rating keys: " .. ( post.postRatingKeys == nil and tostring( post.postRatingKeys ) or "" ) )
+	if ( post.postRatings ) then
+		for rating, key in pairs( post.postRatingKeys ) do
+			print( "            " .. rating .. ": " .. key )
+		end
 	end
 	print( "\n" )
 end

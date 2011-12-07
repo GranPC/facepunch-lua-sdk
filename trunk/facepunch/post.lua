@@ -30,7 +30,7 @@ function new()
 		link = nil,
 		postNumber = nil,
 		postRatings = nil
-		postRatingKeys = {}
+		postRatingKeys = nil
 	}
 	setmetatable( t, __metatable )
 	return t

@@ -194,7 +194,8 @@ function getPostsInPage( threadPageURL )
 			end
 			
 			local postRatingKeys = string.match( fullPost, postRatingKeyDivPattern )
-			if ( postRatingKeys ) then 
+			if ( postRatingKeys ) then
+				post.postRatingKeys = {}
 				for key, rating in string.gmatch( postRatingKeys, postRatingKeyPattern ) do
 					post.postRatingKeys[ rating ] = key
 				end
