@@ -31,7 +31,7 @@ function new()
 		avatar = nil,
 		joinDate = nil,
 		postCount = nil,
-		links = {}
+		links = nil
 	}
 	setmetatable( t, __metatable )
 	return t
