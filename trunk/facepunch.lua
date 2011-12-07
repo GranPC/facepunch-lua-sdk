@@ -1,3 +1,4 @@
+local error = error
 local http = require( "socket.http" )
 
 module( "facepunch" )
@@ -15,4 +16,13 @@ rootURL = "http://www.facepunch.com"
 -------------------------------------------------------------------------------
 function request( URL )
 	return http.request( URL )
+end
+
+-------------------------------------------------------------------------------
+-- facepunch.isUp()
+-- Purpose: Returns true if not downpunch
+-- Output: boolean
+-------------------------------------------------------------------------------
+function isUp()
+	error( "not yet implemented!", 2 )
 end
