@@ -4,7 +4,8 @@
 local thread = require( "facepunch.thread" )
 
 -- Andrew; prints all users who have posted on page 1 of WAYWO December 2011
-for _, member in pairs( thread.getMembersInPage( "http://www.facepunch.com/threads/1144771/1" ) ) do
+local error, members = thread.getMembersInPage( "http://www.facepunch.com/threads/1144771/1" )
+for _, member in pairs( members ) do
 	print( member )
 	print( "\tonline: " .. tostring( member.online ) )
 	print( "\tusergroup: " .. tostring( member.usergroup ) )
