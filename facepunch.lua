@@ -15,7 +15,8 @@ rootURL = "http://www.facepunch.com"
 -- Output: document, status code
 -------------------------------------------------------------------------------
 function request( URL )
-	return http.request( URL )
+	local r, c = http.request( URL )
+	return r, c
 end
 
 -------------------------------------------------------------------------------
@@ -24,5 +25,6 @@ end
 -- Output: boolean
 -------------------------------------------------------------------------------
 function isUp()
-	error( "not yet implemented!", 2 )
+	local r, c = request( rootURL )
+	return c == 200
 end
