@@ -2,11 +2,11 @@
 -- grabs the posts with the highest ratings in a given thread
 -- usage: lua test\highestratings.lua
 
-local threadURL = "http://www.facepunch.com/threads/1125443"
+local threadURL = "http://www.facepunch.com/threads/1144771"
 -- lazy page indexing
 -- TODO: implement thread.getNumberOfPages() - oh and thread.getName() while
 -- we're at it
-local numberOfPages = 854
+local numberOfPages = 19
 
 local thread = require( "facepunch.thread" )
 local highlights = {}
