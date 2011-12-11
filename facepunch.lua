@@ -1,10 +1,29 @@
-local error = error
-local http = require( "socket.http" )
+local MODULE = "luacurl"
+
+-- can we find a better solution for this?
+if ( MODULE == "socket" ) then
+	local http = require( "socket.http" )
+elseif ( MODULE == "luacurl" ) then
+	require( "luacurl" )
+	local curl = curl
+else
+	error( "no module specified" )
+end
 
 module( "facepunch" )
 
-baseURL = "http://www.facepunch.com/"
-rootURL = "http://www.facepunch.com"
+rootURL		= "http://www.facepunch.com"
+
+baseURL		= rootURL .. "/"
+indexPage	= "index.php" -- forum.php
+showThread	= "showthread.php"
+showPost	= "showpost.php"
+userCP		= "usercp.php"
+profileCP	= "profile.php"
+newThread	= "newthread.php"
+newReply	= "newreply.php"
+loginPage	= "login.php"
+logoutPage	= "login.php"
 
 -------------------------------------------------------------------------------
 -- facepunch.request()
