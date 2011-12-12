@@ -78,7 +78,46 @@ function request( URL )
 		local data = table.concat( dataTbl, "" )
 		local http, status, msg = string.match( data, "(.-) (.-) (.-)\n" )
 
-		return data, tonumber(status)
+		return data, tonumber( status )
+	else
+		return nil, 404
+	end
+end
+
+-------------------------------------------------------------------------------
+-- facepunch.post()
+-- Purpose: The core post function for the facepunch module.
+-- Input: URL
+-- Output: document, status code
+-------------------------------------------------------------------------------
+function post( URL, postData )
+	if ( MODULE == "luacurl" ) then
+		local dataTbl = {}
+		local curlObj = luacurl.new()
+		
+		curlObj:setopt( luacurl.OPT_POST, true )
+		curlObj:setopt( luacurl.OPT_HEADER, true )
+		curlObj:setopt( luacurl.OPT_VERBOSE, verbose or false )
+		
+		curlObj:setopt( luacurl.OPT_WRITEFUNCTION, curlWrite( dataTbl ) )
+		
+		curlObj:setopt( luacurl.OPT_URL, URL or rootURL )
+		curlObj:setopt( luacurl.OPT_PORT, 80 )
+		
+		curlObj:setopt( luacurl.OPT_POSTFIELDS, postData )
+		
+		-- remove this
+		curlObj:setopt( luacurl.OPT_PROXY, "127.0.0.1" )
+		curlObj:setopt( luacurl.OPT_PROXYPORT, 1337 )
+		curlObj:setopt( luacurl.OPT_PROXYTYPE, luacurl.PROXY_SOCKS5 )
+		
+		local ok = curlObj:perform()
+		curlObj:close()
+		
+		local data = table.concat( dataTbl, "" )
+		local http, status, msg = string.match( data, "(.-) (.-) (.-)\n" )
+
+		return data, tonumber( status )
 	else
 		return nil, 404
 	end
