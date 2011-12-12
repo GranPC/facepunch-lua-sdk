@@ -53,6 +53,16 @@ local function curlWrite( bufferTable )
 end
 
 -------------------------------------------------------------------------------
+-- facepunch.setSession()
+-- Purpose: Set a session object that other functions can use
+-- Input: sessionObj
+-------------------------------------------------------------------------------
+function setSession( session )
+
+
+end
+
+-------------------------------------------------------------------------------
 -- facepunch.request()
 -- Purpose: The core request function for the facepunch module. All retrieval
 --			functions rely on this wrapper for parsing. It must return the full
@@ -75,6 +85,11 @@ function request( URL )
 		
 		curlObj:setopt( luacurl.OPT_URL, URL or rootURL )
 		curlObj:setopt( luacurl.OPT_PORT, 80 )
+		
+		if ( session ) then
+			curlObj:setopt( luacurl.OPT_COOKIESESSION, true )
+			curlObj:setopt( luacurl.OPT_COOKIEFILE, "cookies/" .. session.username .. ".txt" )
+		end
 		
 		-- remove this
 		curlObj:setopt( luacurl.OPT_PROXY, "127.0.0.1" )
@@ -114,6 +129,12 @@ function postdata( URL, postData ) -- we can't call it facepunch.post :S
 		curlObj:setopt( luacurl.OPT_PORT, 80 )
 		
 		curlObj:setopt( luacurl.OPT_POSTFIELDS, postData )
+		
+		if ( session ) then
+			curlObj:setopt( luacurl.OPT_COOKIESESSION, true )
+			curlObj:setopt( luacurl.OPT_COOKIEJAR, "cookies/" .. session.username .. ".txt" )
+			curlObj:setopt( luacurl.OPT_COOKIEFILE, "cookies/" .. session.username .. ".txt" )
+		end
 		
 		-- remove this
 		curlObj:setopt( luacurl.OPT_PROXY, "127.0.0.1" )
