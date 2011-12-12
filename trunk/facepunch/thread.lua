@@ -90,6 +90,55 @@ postRatingKeyDivPattern = "" ..
 postRatingKeyPattern = "" ..
 "<a href=\"#\".-RatePost%( '.-', '.-', '(.-)' %);\"><img src=\".-\" alt=\"(.-)\" /></a>"
 
+-------------------------------------------------------------------------------
+-- threadNumberOfPagesPattern
+-- Purpose: Pattern for getting a threads maximum page number
+-------------------------------------------------------------------------------
+threadNumberOfPagesPattern = "" ..
+[[class="first_last"><a href="threads/.-/(.-)"]]
+
+-------------------------------------------------------------------------------
+-- threadNamePattern
+-- Purpose: Pattern for getting the threads name
+-------------------------------------------------------------------------------
+threadNamePattern = "" ..
+[[<title> (.-)</title>]]
+
+-------------------------------------------------------------------------------
+-- thread.getName()
+-- Purpose: Returns the name of the thread
+-- Input: threadID
+-- Output: string, name of thread
+-------------------------------------------------------------------------------
+function getName( threadID )
+	local threadPage, returnCode = facepunch.request( facepunch.baseURL .. facepunch.showThread .. "?t=" .. threadID )
+	if ( returnCode == 200 ) then
+		local threadName = threadPage:match( threadNamePattern )
+		return threadName
+	else
+		return nil
+	end
+end
+
+-------------------------------------------------------------------------------
+-- thread.getNumberOfPages()
+-- Purpose: Returns the total ammount of pages in a thread
+-- Input: threadID
+-- Output: integer, table of members
+-------------------------------------------------------------------------------
+function getNumberOfPages( threadID )
+	local threadPage, returnCode = facepunch.request( facepunch.baseURL .. facepunch.showThread .. "?t=" .. threadID )
+	if ( returnCode == 200 ) then
+		local numberOfPages = threadPage:match( threadNumberOfPagesPattern )
+		if ( numberOfPages == nil ) then
+			return 1
+		end
+		numberOfPages = string.gsub( numberOfPages, "%?s=%w+", "" )
+		return numberOfPages
+	else
+		return nil
+	end
+end
 
 -------------------------------------------------------------------------------
 -- thread.getMembersInPage()
