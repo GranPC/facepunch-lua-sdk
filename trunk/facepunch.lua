@@ -11,6 +11,15 @@ else
 	error( "no module specified" )
 end
 
+-------------------------------------------------------------------------------
+-- LuaJIT FFI
+-------------------------------------------------------------------------------
+local ffi
+if ( jit ) then
+	ffi = require("ffi")
+	ffi.cdef([[void Sleep(int ms);]])
+end
+
 local string = string
 local table = table
 local tonumber = tonumber
@@ -85,12 +94,12 @@ function request( URL )
 end
 
 -------------------------------------------------------------------------------
--- facepunch.post()
+-- facepunch.postdata()
 -- Purpose: The core post function for the facepunch module.
 -- Input: URL
 -- Output: document, status code
 -------------------------------------------------------------------------------
-function post( URL, postData )
+function postdata( URL, postData ) -- we can't call it facepunch.post :S
 	if ( MODULE == "luacurl" ) then
 		local dataTbl = {}
 		local curlObj = luacurl.new()
@@ -120,6 +129,20 @@ function post( URL, postData )
 		return data, tonumber( status )
 	else
 		return nil, 404
+	end
+end
+
+-------------------------------------------------------------------------------
+-- facepunch.sleep()
+-- Purpose: Sleep for x seconds
+-------------------------------------------------------------------------------
+function sleep( seconds )
+	if ( ffi ) then
+		if ( ffi.os == "Windows" ) then
+			ffi.C.Sleep( seconds * 1000 )
+		end
+	else
+		error( "facepunch.sleep requires luajit!" )
 	end
 end
 
