@@ -5,8 +5,9 @@ local post = require( "facepunch.post" )
 local pairs = pairs
 local string = string
 local table = table
+local math = math
 local tonumber = tonumber
-
+local print = print
 module( "facepunch.thread" )
 
 -------------------------------------------------------------------------------
@@ -48,7 +49,9 @@ memberSocialLinkPattern = "" ..
 -------------------------------------------------------------------------------
 threadPagePostPattern = "" ..
 -- Post Beginning
-"<li class=.- id=\"post.-(" ..
+"<li class=.- id=\"post_" ..
+-- Post ID
+"(.-)\">.-(" ..
 -- Post Date
 ".-\"date\">(.-)</span>" ..
 -- Link to Post
@@ -111,7 +114,7 @@ threadNamePattern = "" ..
 -- Output: string, name of thread
 -------------------------------------------------------------------------------
 function getName( threadID )
-	local threadPage, returnCode = facepunch.request( facepunch.baseURL .. facepunch.showThread .. "?t=" .. threadID )
+	local threadPage, returnCode = facepunch.request( facepunch.baseURL .. facepunch.showThread .. threadID )
 	if ( returnCode == 200 ) then
 		local threadName = threadPage:match( threadNamePattern )
 		return threadName
@@ -127,7 +130,7 @@ end
 -- Output: integer, table of members
 -------------------------------------------------------------------------------
 function getNumberOfPages( threadID )
-	local threadPage, returnCode = facepunch.request( facepunch.baseURL .. facepunch.showThread .. "?t=" .. threadID )
+	local threadPage, returnCode = facepunch.request( facepunch.baseURL .. facepunch.showThread .. threadID )
 	if ( returnCode == 200 ) then
 		local numberOfPages = threadPage:match( threadNumberOfPagesPattern )
 		if ( numberOfPages == nil ) then
@@ -147,8 +150,8 @@ end
 -- Input: threadPageURL - URL to a single page in the thread
 -- Output: integer, table of members
 -------------------------------------------------------------------------------
-function getMembersInPage( threadPageURL )
-	local threadPage, returnCode = facepunch.request( threadPageURL )
+function getMembersInPage( threadID )
+	local threadPage, returnCode = facepunch.http.get( facepunch.baseURL .. facepunch.showThread .. threadID )
 	if ( returnCode == 200 ) then
 		local t = {}
 		local matched = false
@@ -225,7 +228,7 @@ end
 -- Input: threadPageURL - URL to a single page in the thread
 -- Output: table of members
 -------------------------------------------------------------------------------
-function getMembersReading( threadPageURL )
+function getMembersReading( threadID )
 	error( "not yet implemented!", 2 )
 end
 
@@ -237,8 +240,16 @@ end
 --		  postID - number of post
 -- Output: integer, post
 -------------------------------------------------------------------------------
-function getPostByID( threadPageURL, postID )
-	error( "not yet implemented!", 2 )
+function getPostByID( threadID, postID )
+	-- facepunch has 40 posts per page
+	local pageID = math.ceil( postID / 40 )
+	local returnCode, postTable = getPostsInPage( threadID, pageID )
+	for _, post in pairs( postTable ) do
+		if ( tonumber( post.postNumber ) == tonumber( postID ) ) then
+			return 0, post
+		end
+	end
+	return 1, nil
 end
 
 -------------------------------------------------------------------------------
@@ -248,16 +259,18 @@ end
 -- Input: threadPageURL - URL to a single page in the thread
 -- Output: table of posts
 -------------------------------------------------------------------------------
-function getPostsInPage( threadPageURL )
-	local threadPage, returnCode = facepunch.request( threadPageURL )
+function getPostsInPage( threadID, pageNumber )
+	local threadPage, returnCode = facepunch.http.get( facepunch.baseURL .. facepunch.showThread .. threadID .. "/" .. pageNumber )
 	if ( returnCode == 200 ) then
 		local t = {}
-		for fullPost,
+		for postID,
+			fullPost,
 			postDate,
 			link,
 			postNumber
 			in string.gmatch( threadPage, threadPagePostPattern ) do
 			local post		= post()
+			post.postID		= postID
 			post.postDate	= postDate
 			post.link		= facepunch.baseURL .. string.gsub( link, "&amp;", "&" )
 			post.postNumber	= postNumber

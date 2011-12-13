@@ -1,5 +1,5 @@
 -- general thread testing
--- usage: lua test\sessionTest.lua
+-- usage: lua test\setSession.lua
 
 io.write( "Username: " )
 local username = io.read()

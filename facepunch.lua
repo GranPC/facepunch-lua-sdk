@@ -17,7 +17,8 @@ rootURL		= "http://www.facepunch.com"
 
 baseURL		= rootURL .. "/"
 indexPage	= "index.php" -- forum.php
-showThread	= "showthread.php"
+ajaxPage	= "ajax.php"
+showThread	= "threads/" -- showthread.php?t=
 showPost	= "showpost.php"
 userCP		= "usercp.php"
 profileCP	= "profile.php"
@@ -41,6 +42,33 @@ function getSecurityToken()
 	local fpHome = http.get( rootURL )
 
 	return string.match( fpHome, securityTokenPattern )
+end
+
+-------------------------------------------------------------------------------
+-- facepunch.searchUser()
+-- Purpose: Get all users with the given string in their name
+-- Output: table user names
+-------------------------------------------------------------------------------
+function searchUser( name )
+	local securityToken = getSecurityToken()
+	
+	local users = {}
+	if (securityToken ~= "guest") then
+		local postFields = "" ..
+		-- Method
+		"do=" .. "usersearch" ..
+		-- PostID
+		"&fragment=" .. name ..
+		-- Securitytoken
+		"&securitytoken=" .. securityToken
+		
+		local xml = http.post( baseURL .. ajaxPage, postFields )
+		for id, user in string.gmatch( xml, [[<user userid="(.-)">(.-)</user>]] ) do
+			users[ id ] = user
+		end
+	end
+	
+	return users
 end
 
 -------------------------------------------------------------------------------
@@ -75,3 +103,31 @@ function isUp()
 	local data, status = http.get( rootURL )
 	return status == 200
 end
+
+-------------------------------------------------------------------------------
+-- facepunch.ratings
+-- Purpose: Rating string -> rating number
+-------------------------------------------------------------------------------
+ratings = {
+	["Agree"]				= 1,
+	["Disagree"]			= 2,
+	["Funny"]				= 3,
+	["Informative"]			= 4,
+	["Friendly"]			= 5,
+	["Useful"]				= 6,
+	["Optimistic"]			= 7,
+	["Artistic"]			= 8,
+	["Late"]				= 9,
+	-- spell check
+	-- bad reading
+	["Dumb"]				= 12,
+	["Zing"]				= 13,
+	["Programming King"]	= 14,
+	["Smarked"]				= 15,
+	["Lua King"]			= 16,
+	["Mapping King"]		= 17,
+	["Winner"]				= 18,
+	["Lua Helper"]			= 19,
+	-- missing?
+	["Moustache"]			= 21
+}
