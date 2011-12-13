@@ -1,5 +1,5 @@
 -- general thread testing
--- usage: lua test\threadTest.lua
+-- usage: lua test\threadMisc.lua
 
 local threadID = 1144771
 local threadName = ""

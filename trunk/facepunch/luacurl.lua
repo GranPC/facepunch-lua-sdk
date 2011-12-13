@@ -33,9 +33,9 @@ function get( URL )
 	end
 	
 	-- remove this
-	--curlObj:setopt( curl.OPT_PROXY, "127.0.0.1" )
-	--curlObj:setopt( curl.OPT_PROXYPORT, 1337 )
-	--curlObj:setopt( curl.OPT_PROXYTYPE, curl.PROXY_SOCKS5 )
+	curlObj:setopt( curl.OPT_PROXY, "127.0.0.1" )
+	curlObj:setopt( curl.OPT_PROXYPORT, 1337 )
+	curlObj:setopt( curl.OPT_PROXYTYPE, curl.PROXY_SOCKS5 )
 	
 	local ok = curlObj:perform()
 	curlObj:close()
@@ -68,9 +68,9 @@ function post( URL, postData )
 	end
 
 	-- remove this
-	--curlObj:setopt( curl.OPT_PROXY, "127.0.0.1" )
-	--curlObj:setopt( curl.OPT_PROXYPORT, 1337 )
-	--curlObj:setopt( curl.OPT_PROXYTYPE, curl.PROXY_SOCKS5 )
+	curlObj:setopt( curl.OPT_PROXY, "127.0.0.1" )
+	curlObj:setopt( curl.OPT_PROXYPORT, 1337 )
+	curlObj:setopt( curl.OPT_PROXYTYPE, curl.PROXY_SOCKS5 )
 
 	local ok = curlObj:perform()
 	curlObj:close()
