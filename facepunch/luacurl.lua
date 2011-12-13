@@ -8,6 +8,10 @@ local setmetatable = setmetatable
 
 module( "facepunch.luacurl" )
 
+function escape( str )
+	return curl.escape( str )
+end
+
 local function curlWrite( bufferTable )
 	return function( stream, buffer )
 		table.insert( bufferTable, buffer )

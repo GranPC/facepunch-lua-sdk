@@ -144,6 +144,96 @@ function getNumberOfPages( threadID )
 end
 
 -------------------------------------------------------------------------------
+-- thread.getPostByID()
+-- Purpose: Returns 0 if the post is found, then the post object, otherwise it
+--			returns 1 and nil
+-- Input: threadPageURL - URL to a single page in the thread
+--		  postID - number of post
+-- Output: integer, post
+-------------------------------------------------------------------------------
+function getPostByID( threadID, postID )
+	-- facepunch has 40 posts per page
+	local pageID = math.ceil( postID / 40 )
+	local returnCode, postTable = getPostsInPage( threadID, pageID )
+	for _, post in pairs( postTable ) do
+		if ( tonumber( post.postNumber ) == tonumber( postID ) ) then
+			return 0, post
+		end
+	end
+	return 1, nil
+end
+
+-------------------------------------------------------------------------------
+-- thread.getPostsInPage()
+-- Purpose: Returns all posts on a given thread page, first returns 0 if there
+--			are no errors or 1 in case of errors
+-- Input: threadPageURL - URL to a single page in the thread
+-- Output: table of posts
+-------------------------------------------------------------------------------
+function getPostsInPage( threadID, pageNumber )
+	local threadPage, returnCode = facepunch.http.get( facepunch.baseURL .. facepunch.showThread .. threadID .. "/" .. pageNumber )
+	if ( returnCode == 200 ) then
+		local t = {}
+		for postID,
+			fullPost,
+			postDate,
+			link,
+			postNumber
+			in string.gmatch( threadPage, threadPagePostPattern ) do
+			local post		= post()
+			post.postID		= postID
+			post.postDate	= postDate
+			post.link		= facepunch.baseURL .. string.gsub( link, "&amp;", "&" )
+			post.postNumber	= postNumber
+
+			local postRatings = string.match( fullPost, postRatingResultSpanPattern )
+			if ( postRatings ) then
+				post.postRatings = {}
+				for name, amount in string.gmatch( postRatings, postRatingResultPattern ) do
+					post.postRatings[ name ] = tonumber( amount )
+				end
+			end
+			
+			local postRatingKeys = string.match( fullPost, postRatingKeyDivPattern )
+			if ( postRatingKeys ) then
+				post.postRatingKeys = {}
+				for key, rating in string.gmatch( postRatingKeys, postRatingKeyPattern ) do
+					post.postRatingKeys[ rating ] = key
+				end
+			end
+
+			table.insert( t, post )
+		end
+		return 0, t
+	else
+		return 1, nil
+	end
+end
+
+-------------------------------------------------------------------------------
+-- thread.Post()
+-- Purpose: Post a new reply
+-- Input: threadID, postData
+-------------------------------------------------------------------------------
+function Post( threadID, postData )
+	local securityToken = facepunch.getSecurityToken()
+	
+	if (securityToken ~= "guest") then
+		local postFields = "" ..
+		-- Method
+		"do=" .. "postreply" ..
+		-- Message
+		"&message=" .. facepunch.http.escape( postData ) ..
+		-- ThreadID
+		"&t=" .. threadID ..
+		-- Securitytoken
+		"&securitytoken=" .. securityToken
+
+		facepunch.http.post( facepunch.baseURL .. facepunch.newReply .. "?do=postreply&t=" .. threadID, postFields)
+	end
+end
+
+-------------------------------------------------------------------------------
 -- thread.getMembersInPage()
 -- Purpose: Returns all members that have posted on a given thread page, first
 --			returns 0 if there are no errors or 1 in case of errors
@@ -230,71 +320,4 @@ end
 -------------------------------------------------------------------------------
 function getMembersReading( threadID )
 	error( "not yet implemented!", 2 )
-end
-
--------------------------------------------------------------------------------
--- thread.getPostByID()
--- Purpose: Returns 0 if the post is found, then the post object, otherwise it
---			returns 1 and nil
--- Input: threadPageURL - URL to a single page in the thread
---		  postID - number of post
--- Output: integer, post
--------------------------------------------------------------------------------
-function getPostByID( threadID, postID )
-	-- facepunch has 40 posts per page
-	local pageID = math.ceil( postID / 40 )
-	local returnCode, postTable = getPostsInPage( threadID, pageID )
-	for _, post in pairs( postTable ) do
-		if ( tonumber( post.postNumber ) == tonumber( postID ) ) then
-			return 0, post
-		end
-	end
-	return 1, nil
-end
-
--------------------------------------------------------------------------------
--- thread.getPostsInPage()
--- Purpose: Returns all posts on a given thread page, first returns 0 if there
---			are no errors or 1 in case of errors
--- Input: threadPageURL - URL to a single page in the thread
--- Output: table of posts
--------------------------------------------------------------------------------
-function getPostsInPage( threadID, pageNumber )
-	local threadPage, returnCode = facepunch.http.get( facepunch.baseURL .. facepunch.showThread .. threadID .. "/" .. pageNumber )
-	if ( returnCode == 200 ) then
-		local t = {}
-		for postID,
-			fullPost,
-			postDate,
-			link,
-			postNumber
-			in string.gmatch( threadPage, threadPagePostPattern ) do
-			local post		= post()
-			post.postID		= postID
-			post.postDate	= postDate
-			post.link		= facepunch.baseURL .. string.gsub( link, "&amp;", "&" )
-			post.postNumber	= postNumber
-
-			local postRatings = string.match( fullPost, postRatingResultSpanPattern )
-			if ( postRatings ) then
-				post.postRatings = {}
-				for name, amount in string.gmatch( postRatings, postRatingResultPattern ) do
-					post.postRatings[ name ] = tonumber( amount )
-				end
-			end
-			
-			local postRatingKeys = string.match( fullPost, postRatingKeyDivPattern )
-			if ( postRatingKeys ) then
-				post.postRatingKeys = {}
-				for key, rating in string.gmatch( postRatingKeys, postRatingKeyPattern ) do
-					post.postRatingKeys[ rating ] = key
-				end
-			end
-
-			table.insert( t, post )
-		end
-		return 0, t
-	else
-		return 1, nil
-	end
 end
