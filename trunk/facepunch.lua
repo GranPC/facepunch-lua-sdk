@@ -1,6 +1,3 @@
-local error = error
-local http = require( "socket.http" )
-
 module( "facepunch" )
 
 baseURL = "http://www.facepunch.com/"
