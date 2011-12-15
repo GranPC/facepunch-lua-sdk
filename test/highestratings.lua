@@ -1,6 +1,6 @@
 -- highest ratings
 -- grabs the posts with the highest ratings in a given thread
--- usage: lua test\highestRatings.lua
+-- usage: lua test\highestratings.lua
 
 local threadURL = "http://www.facepunch.com/threads/1144771"
 -- lazy page indexing

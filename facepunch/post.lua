@@ -28,7 +28,6 @@ function new()
 	local t = {
 		postDate = nil,
 		link = nil,
-		postID = nil,
 		postNumber = nil,
 		postRatings = nil,
 		postRatingKeys = nil
@@ -55,25 +54,7 @@ setmetatable( _M, metatable )
 -- Input: rating - name of the rating
 -------------------------------------------------------------------------------
 function post:rate( rating )
-	if ( facepunch.ratings[ rating ] and self.postRatingKeys[ rating ] ) then
-		local securityToken = facepunch.getSecurityToken()
-		
-		if ( securityToken ~= "guest" ) then
-			local postFields = "" ..
-			-- Method
-			"do=" .. "rate_post" ..
-			-- PostID
-			"&postid=" .. self.postID ..
-			-- Rating
-			"&rating=" .. facepunch.ratings[ rating ] ..
-			-- Key
-			"&key=" .. self.postRatingKeys[ rating ] ..
-			-- Securitytoken
-			"&securitytoken=" .. securityToken
-			
-			facepunch.http.post( facepunch.baseURL .. facepunch.ajaxPage, postFields )
-		end
-	end
+	error( "not yet implemented!", 2 )
 end
 
 -------------------------------------------------------------------------------
