@@ -1,18 +1,12 @@
 -- thread.getPostsInPage
 -- usage: lua test\getPostsInPage.lua
 
-require( "facepunch" )
 local thread = require( "facepunch.thread" )
-local session = require( "facepunch.session" )
-
-local mySession = session( "LuaStoned" )
-facepunch.setSession( mySession )
 
 -- Andrew; prints all users who have posted on page whatever of WAYWO December 2011
-local error, posts = thread.getPostsInPage( 1144771, 18 )
+local error, posts = thread.getPostsInPage( "http://www.facepunch.com/threads/1144771/18" )
 for _, post in pairs( posts ) do
 	print( post )
-	print( "      post id: " .. tostring( post.postID ) )
 	print( "      post date: " .. tostring( post.postDate ) )
 	print( "      link: " .. tostring( post.link ) )
 	print( "      post number: " .. tostring( post.postNumber ) )
