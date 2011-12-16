@@ -1,10 +1,21 @@
 -- thread.getPostsInPage
 -- usage: lua test\getPostsInPage.lua
 
-local thread = require( "facepunch.thread" )
+local facepunch	= require( "facepunch" )
+local thread	= facepunch.thread
 
--- Andrew; prints all users who have posted on page whatever of WAYWO December 2011
-local error, posts = thread.getPostsInPage( "http://www.facepunch.com/threads/1144771/18" )
+-- Setup our connector
+-- Use luasocket for this test
+require( "connectors.luasocket" )
+
+-- Andrew; retrieve a thread, page 1
+local error, threadPage = -1, ""
+while error ~= 0 do
+	error, threadPage = thread.getPage( 1144771, 1 )
+end
+
+-- Andrew; prints all post objects parsed on page 1 of WAYWO December 2011
+local posts = thread.getPostsInPage( threadPage )
 for _, post in pairs( posts ) do
 	print( post )
 	print( "      post date: " .. tostring( post.postDate ) )
