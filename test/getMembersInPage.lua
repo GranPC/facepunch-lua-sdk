@@ -1,10 +1,20 @@
 -- thread.getMembersInPage
 -- usage: lua test\getMembersInPage.lua
 
-local thread = require( "facepunch.thread" )
+local facepunch	= require( "facepunch" )
+local thread	= facepunch.thread
+
+-- Setup our connector
+-- Use luasocket for this test
+require( "connectors.luasocket" )
 
 -- Andrew; prints all users who have posted on page 1 of WAYWO December 2011
-local error, members = thread.getMembersInPage( "http://www.facepunch.com/threads/1144771/1" )
+local error, threadPage = -1, ""
+while error ~= 0 do
+	error, threadPage = thread.getPage( 1144771, 1 )
+end
+
+local members = thread.getMembersInPage( threadPage )
 for _, member in pairs( members ) do
 	print( member )
 	print( "\tonline: " .. tostring( member.online ) )
