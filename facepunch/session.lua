@@ -9,6 +9,7 @@ local facepunch = require( "facepunch" )
 local http = require( "facepunch.http" )
 local setmetatable = setmetatable
 local string = string
+local print = print
 
 module( "facepunch.session" )
 
@@ -22,7 +23,7 @@ logoutHashPattern = "<a href=\"login.php%?do=logout&amp;logouthash=(.-)\">"
 -- securityTokenPattern
 -- Purpose: Pattern for retrieving the session security token
 -------------------------------------------------------------------------------
-securityTokenPattern = "<input type=\"hidden\" name=\"securitytoken\" value=\"(.-)\" />"
+securityTokenPattern = "var SECURITYTOKEN = \"(.-)\";"
 
 -------------------------------------------------------------------------------
 -- thisSession
@@ -55,7 +56,7 @@ end
 -- Output: error code, string token
 -------------------------------------------------------------------------------
 function getSecurityToken()
-	local r, c = http.get( facepunch.rootURL )
+	local r, c = http.get( facepunch.rootURL, thisSession )
 	if ( c == 200 ) then
 		return 0, string.match( r, securityTokenPattern )
 	else
@@ -136,7 +137,7 @@ function session:login()
 		"&vb_login_md5password=" .. "" ..
 		"&vb_login_md5password_utf=" .. ""
 		
-		local r, c, cookie = facepunch.http.post( facepunch.rootURL .. "/" .. facepunch.loginPage .. "?do=login", postFields )
+		local r, c, cookie = facepunch.http.post( facepunch.rootURL .. "/" .. facepunch.loginPage .. "?do=login", nil, postFields )
 		if ( c == 200 ) then
 			self.cookie = cookie
 			return 0
