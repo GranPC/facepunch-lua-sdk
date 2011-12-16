@@ -14,6 +14,16 @@ io.write( "Password: " )
 local password = io.read()
 
 local mySession = session( username, password )
-mySession:login()
+print( "Logging in as " .. username .. "..." )
+local error = -1
+while error ~= 0 do
+	error = mySession:login()
+end
 
-print( session.getSecurityToken() )
+session.setActiveSession( mySession )
+
+local error, token = -1, nil
+while error ~= 0 do
+	error, token = session.getSecurityToken()
+end
+print( "Security Token: " .. tostring( token ) )
