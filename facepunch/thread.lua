@@ -106,7 +106,7 @@ postRatingKeyPattern = "" ..
 -- Output: integer, table of members
 -------------------------------------------------------------------------------
 function getMembersInPage( threadPageURL )
-	local threadPage, returnCode = facepunch.request( threadPageURL )
+	local threadPage, returnCode = facepunch.http.get( threadPageURL )
 	if ( returnCode == 200 ) then
 		local t = {}
 		local matched = false
@@ -207,7 +207,7 @@ end
 -- Output: table of posts
 -------------------------------------------------------------------------------
 function getPostsInPage( threadPageURL )
-	local threadPage, returnCode = facepunch.request( threadPageURL )
+	local threadPage, returnCode = facepunch.http.get( threadPageURL )
 	if ( returnCode == 200 ) then
 		local t = {}
 		for fullPost,
