@@ -5,6 +5,7 @@
 --			Gran PC
 --			Gregor Steiner
 -------------------------------------------------------------------------------
+local error = error
 local http = require( "socket.http" )
 
 function facepunch.http.get( URL )
@@ -13,4 +14,5 @@ function facepunch.http.get( URL )
 end
 
 function facepunch.http.post( URL, postData )
+	error( "not yet implemented!", 2 )
 end
