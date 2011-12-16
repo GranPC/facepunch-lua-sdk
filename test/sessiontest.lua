@@ -6,7 +6,7 @@ local session	= facepunch.session
 
 -- Setup our connector
 -- Use luacurl for this test
-require( "connectors.luasocket" )
+require( "connectors.luacurl" )
 
 io.write( "Username: " )
 local username = io.read()
