@@ -11,6 +11,7 @@ local http = require( "facepunch.http" )
 local member = require( "facepunch.member" )
 local post = require( "facepunch.post" )
 local pairs = pairs
+local session = require( "facepunch.session" )
 local string = string
 local table = table
 local tonumber = tonumber
@@ -234,7 +235,7 @@ function getPage( threadID, pageNumber )
 	if ( pageNumber ~= "" ) then
 		pageNumber = "/" .. pageNumber
 	end
-	local r, c = http.get( facepunch.baseURL .. "/threads/" .. threadID .. pageNumber )
+	local r, c = http.get( facepunch.baseURL .. "/threads/" .. threadID .. pageNumber, session.getActiveSession() )
 	if ( c == 200 ) then
 		return 0, r
 	else
