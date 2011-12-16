@@ -8,11 +8,11 @@
 local error = error
 local http = require( "socket.http" )
 
-function facepunch.http.get( URL )
+function facepunch.http.get( URL, session )
 	local r, c = http.request( URL )
-	return r, c
+	return r, c, cookie
 end
 
-function facepunch.http.post( URL, postData )
-	error( "not yet implemented!", 2 )
+function facepunch.http.post( URL, session, postData )
+	error( "not yet implemented!" )
 end
