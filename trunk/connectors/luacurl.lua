@@ -20,21 +20,60 @@ local function curlWrite( bufferTable )
 end
 
 function facepunch.http.get( URL, session )
+	local ht = {}
 	local t = {}
 	local curlObj = curl.new()
 	
 	curlObj:setopt( curl.OPT_HEADER, true )
+	curlObj:setopt( curl.OPT_HEADERFUNCTION, curlWrite( ht ) )
 	curlObj:setopt( curl.OPT_WRITEFUNCTION, curlWrite( t ) )
 	curlObj:setopt( curl.OPT_URL, URL )
+	if ( session and session.cookie ) then
+		curlObj:setopt( curl.OPT_COOKIE, session.cookie )
+	end
 	
 	curlObj:perform()
 	curlObj:close()
 	
+	local hr = table.concat( ht, "" )
 	local r = table.concat( t, "" )
 	local h, c, m = string.match( r, "(.-) (.-) (.-)\n" )
-	return r, tonumber( c )
+	t = {}
+	local cookie = ""
+	for k, v in string.gmatch( hr, "Set%-Cookie: (.-)=(.-);" ) do
+		cookie = k .. "=" .. v .. ""
+		table.insert( t, cookie )
+	end
+	cookie = table.concat( t, "; " )
+	return r, tonumber( c ), cookie
 end
 
 function facepunch.http.post( URL, session, postData )
-	error( "not yet implemented!", 2 )
+	local ht = {}
+	local t = {}
+	local curlObj = curl.new()
+	
+	curlObj:setopt( curl.OPT_HEADER, true )
+	curlObj:setopt( curl.OPT_HEADERFUNCTION, curlWrite( ht ) )
+	curlObj:setopt( curl.OPT_WRITEFUNCTION, curlWrite( t ) )
+	curlObj:setopt( curl.OPT_URL, URL )
+	curlObj:setopt( curl.OPT_POSTFIELDS, postData )
+	if ( session and session.cookie ) then
+		curlObj:setopt( curl.OPT_COOKIE, session.cookie )
+	end
+	
+	curlObj:perform()
+	curlObj:close()
+	
+	local hr = table.concat( ht, "" )
+	local r = table.concat( t, "" )
+	local h, c, m = string.match( r, "(.-) (.-) (.-)\n" )
+	t = {}
+	local cookie = ""
+	for k, v in string.gmatch( hr, "Set%-Cookie: (.-)=(.-);" ) do
+		cookie = k .. "=" .. v .. ""
+		table.insert( t, cookie )
+	end
+	cookie = table.concat( t, "; " )
+	return r, tonumber( c ), cookie
 end
