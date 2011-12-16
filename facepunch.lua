@@ -1,20 +1,21 @@
+-------------------------------------------------------------------------------
+-- Scripted interfacing for Facepunch
+-- Facepunch Lua API
+-- Authors: Andrew McWatters
+--			Gran PC
+--			Gregor Steiner
+-------------------------------------------------------------------------------
+local require = require
+
 module( "facepunch" )
 
-baseURL = "http://www.facepunch.com/"
-rootURL = "http://www.facepunch.com"
+http	= require( "facepunch.http" )
+member	= require( "facepunch.member" )
+post	= require( "facepunch.post" )
+thread	= require( "facepunch.thread" )
 
--------------------------------------------------------------------------------
--- facepunch.request()
--- Purpose: The core request function for the facepunch module. All retrieval
---			functions rely on this wrapper for parsing. It must return the full
---			page if possible and a status code (200 OK).
--- Input: URL
--- Output: document, status code
--------------------------------------------------------------------------------
-function request( URL )
-	local r, c = http.request( URL )
-	return r, c
-end
+baseURL	= "http://www.facepunch.com/"
+rootURL	= "http://www.facepunch.com"
 
 -------------------------------------------------------------------------------
 -- facepunch.isUp()

@@ -1,3 +1,10 @@
+-------------------------------------------------------------------------------
+-- Thread module
+-- Facepunch Lua API
+-- Authors: Andrew McWatters
+--			Gran PC
+--			Gregor Steiner
+-------------------------------------------------------------------------------
 local error = error
 local facepunch = require( "facepunch" )
 local member = require( "facepunch.member" )
