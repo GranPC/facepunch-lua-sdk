@@ -100,6 +100,21 @@ postRatingKeyPattern = "" ..
 
 
 -------------------------------------------------------------------------------
+-- threadNumberOfPagesPattern
+-- Purpose: Pattern for getting a threads maximum page number
+-------------------------------------------------------------------------------
+threadNumberOfPagesPattern = "" ..
+"class=\"first_last\"><a href=\"threads/.-/(.-)\""
+
+-------------------------------------------------------------------------------
+-- threadNamePattern
+-- Purpose: Pattern for getting the threads name
+-------------------------------------------------------------------------------
+threadNamePattern = "" ..
+"<title> (.-)</title>"
+
+
+-------------------------------------------------------------------------------
 -- thread.getMembersInPage()
 -- Purpose: Returns all members that have posted on a given thread page, first
 --			returns 0 if there are no errors or 1 in case of errors
@@ -181,6 +196,28 @@ end
 -------------------------------------------------------------------------------
 function getMembersReading( threadPage )
 	error( "not yet implemented!", 2 )
+end
+
+-------------------------------------------------------------------------------
+-- thread.getName()
+-- Purpose: Returns the name of the thread
+-- Input: threadPage - string of the requested page
+-- Output: name of thread
+-------------------------------------------------------------------------------
+function getName( threadPage )
+	return string.match( threadPage, threadNamePattern )
+end
+
+-------------------------------------------------------------------------------
+-- thread.getNumberOfPages()
+-- Purpose: Returns the total ammount of pages in a thread
+-- Input: threadID
+-- Output: number of pages
+-------------------------------------------------------------------------------
+function getNumberOfPages( threadPage )
+	local n = string.match( threadPage, threadNumberOfPagesPattern )
+	if ( n == nil ) then return 1 end
+	return tonumber( string.gsub( n, "%?s=%w+", "" ) )
 end
 
 -------------------------------------------------------------------------------
