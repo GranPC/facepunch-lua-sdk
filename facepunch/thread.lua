@@ -217,7 +217,7 @@ end
 function getNumberOfPages( threadPage )
 	local n = string.match( threadPage, threadNumberOfPagesPattern )
 	if ( n == nil ) then return 1 end
-	return tonumber( string.gsub( n, "%?s=%w+", "" ) )
+	return tonumber( string.gsub( n, "%?s=%w+", "" ), 10 )
 end
 
 -------------------------------------------------------------------------------
@@ -231,7 +231,9 @@ end
 -------------------------------------------------------------------------------
 function getPage( threadID, pageNumber )
 	pageNumber = pageNumber or ""
-	pageNumber = "/" .. pageNumber
+	if ( pageNumber ~= "" ) then
+		pageNumber = "/" .. pageNumber
+	end
 	local r, c = http.get( facepunch.baseURL .. "/threads/" .. threadID .. pageNumber )
 	if ( c == 200 ) then
 		return 0, r
