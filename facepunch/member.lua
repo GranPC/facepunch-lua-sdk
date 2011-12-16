@@ -57,16 +57,6 @@ local metatable = {
 setmetatable( _M, metatable )
 
 -------------------------------------------------------------------------------
--- member:__eq( member )
--- Purpose: Compares against another member object
--- Output: boolean
--------------------------------------------------------------------------------
-function member:__eq( member )
-	if not self.username then return false end
-	return self.username == member.username
-end
-
--------------------------------------------------------------------------------
 -- member:__tostring()
 -- Purpose: Returns a string representation of a member
 -- Output: string
