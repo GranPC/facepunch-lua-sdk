@@ -39,12 +39,10 @@ function facepunch.http.get( URL, session )
 	local r = table.concat( t, "" )
 	local h, c, m = string.match( r, "(.-) (.-) (.-)\n" )
 	t = {}
-	local cookie = ""
-	for k, v in string.gmatch( hr, "Set%-Cookie: (.-)=(.-);" ) do
-		cookie = k .. "=" .. v .. ""
+	for cookie in string.gmatch( hr, "Set%-Cookie: (.-);" ) do
 		table.insert( t, cookie )
 	end
-	cookie = table.concat( t, "; " )
+	local cookie = table.concat( t, "; " )
 	return r, tonumber( c ), cookie
 end
 
@@ -69,11 +67,9 @@ function facepunch.http.post( URL, session, postData )
 	local r = table.concat( t, "" )
 	local h, c, m = string.match( r, "(.-) (.-) (.-)\n" )
 	t = {}
-	local cookie = ""
-	for k, v in string.gmatch( hr, "Set%-Cookie: (.-)=(.-);" ) do
-		cookie = k .. "=" .. v .. ""
+	for cookie in string.gmatch( hr, "Set%-Cookie: (.-);" ) do
 		table.insert( t, cookie )
 	end
-	cookie = table.concat( t, "; " )
+	local cookie = table.concat( t, "; " )
 	return r, tonumber( c ), cookie
 end
