@@ -17,6 +17,7 @@ thread	= require( "facepunch.thread" )
 
 baseURL		= "http://www.facepunch.com/"
 rootURL		= "http://www.facepunch.com"
+ajaxPage	= "ajax.php"
 loginPage	= "login.php"
 
 -------------------------------------------------------------------------------
