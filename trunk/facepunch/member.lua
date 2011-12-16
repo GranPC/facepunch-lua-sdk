@@ -1,3 +1,10 @@
+-------------------------------------------------------------------------------
+-- Member module and class definition
+-- Facepunch Lua API
+-- Authors: Andrew McWatters
+--			Gran PC
+--			Gregor Steiner
+-------------------------------------------------------------------------------
 local setmetatable = setmetatable
 
 module( "facepunch.member" )

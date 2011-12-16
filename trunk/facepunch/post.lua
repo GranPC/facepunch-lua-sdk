@@ -1,5 +1,11 @@
-local facepunch = require( "facepunch" )
-local member = require( "facepunch.member" )
+-------------------------------------------------------------------------------
+-- Post module and class definition
+-- Facepunch Lua API
+-- Authors: Andrew McWatters
+--			Gran PC
+--			Gregor Steiner
+-------------------------------------------------------------------------------
+local error = error
 local setmetatable = setmetatable
 
 module( "facepunch.post" )
