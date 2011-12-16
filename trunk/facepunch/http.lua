@@ -10,7 +10,7 @@ local error = error
 module( "facepunch.http" )
 
 -------------------------------------------------------------------------------
--- facepunch.get()
+-- http.get()
 -- Purpose: The get wrapper function for the facepunch module. All retrieval
 --			functions rely on this wrapper for parsing. It must return the full
 --			page if possible and a status code (200 OK).
@@ -22,7 +22,7 @@ function get( URL )
 end
 
 -------------------------------------------------------------------------------
--- facepunch.post()
+-- http.post()
 -- Purpose: The post wrapper function for the facepunch module. All submission
 --			functions rely on this wrapper for interaction. It must return the
 --			full page if possible and a status code (200 OK).
