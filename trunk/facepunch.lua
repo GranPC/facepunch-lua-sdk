@@ -23,6 +23,6 @@ rootURL	= "http://www.facepunch.com"
 -- Output: boolean
 -------------------------------------------------------------------------------
 function isUp()
-	local r, c = request( rootURL )
+	local r, c = http.get( rootURL )
 	return c == 200
 end
