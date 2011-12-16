@@ -28,7 +28,13 @@ function facepunch.http.get( URL, session )
 	t = {}
 	for k, v in pairs( h ) do
 		if ( k == "set-cookie" ) then
-			for cookie in string.gmatch( v, "(.-); expires=.-; path=.-; domain=.-, " ) do
+			v = string.gsub( v, "(expires=.-; )", "" )
+			v = string.gsub( v, "(path=.-; )", "" )
+			v = string.gsub( v, "(HttpOnly, )", "" )
+			v = string.gsub( v, "(domain=.-; )", "" )
+			v = string.gsub( v, "(domain=.-, )", "" )
+			for cookie in string.gmatch( v, "(.-=.-);" ) do
+				cookie = string.gsub( cookie, "^%s*(.-)%s*$", "%1" )
 				table.insert( t, cookie )
 			end
 		end
@@ -59,7 +65,13 @@ function facepunch.http.post( URL, session, postData )
 	t = {}
 	for k, v in pairs( h ) do
 		if ( k == "set-cookie" ) then
-			for cookie in string.gmatch( v, "(.-); expires=.-; path=.-; domain=.-, " ) do
+			v = string.gsub( v, "(expires=.-; )", "" )
+			v = string.gsub( v, "(path=.-; )", "" )
+			v = string.gsub( v, "(HttpOnly, )", "" )
+			v = string.gsub( v, "(domain=.-; )", "" )
+			v = string.gsub( v, "(domain=.-, )", "" )
+			for cookie in string.gmatch( v, "(.-=.-);" ) do
+				cookie = string.gsub( cookie, "^%s*(.-)%s*$", "%1" )
 				table.insert( t, cookie )
 			end
 		end
