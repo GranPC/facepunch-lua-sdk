@@ -22,6 +22,15 @@ end
 
 session.setActiveSession( mySession )
 
+print( "Cookies: " )
+-- Grab the session cookie and append an additional separator for gmatch
+-- convenience
+local cookie = mySession.cookie
+cookie = cookie .. "; "
+for k, v in string.gmatch( cookie, "(.-)=(.-); " ) do
+	print( "\t" .. k .. ": " .. v )
+end
+
 local error, token = -1, nil
 while error ~= 0 do
 	error, token = session.getSecurityToken()
