@@ -19,7 +19,7 @@ local function curlWrite( bufferTable )
 	end
 end
 
-function facepunch.http.get( URL )
+function facepunch.http.get( URL, session )
 	local t = {}
 	local curlObj = curl.new()
 	
@@ -35,6 +35,6 @@ function facepunch.http.get( URL )
 	return r, tonumber( c )
 end
 
-function facepunch.http.post( URL, postData )
+function facepunch.http.post( URL, session, postData )
 	error( "not yet implemented!", 2 )
 end

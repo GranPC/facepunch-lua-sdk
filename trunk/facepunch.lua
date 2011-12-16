@@ -12,10 +12,12 @@ module( "facepunch" )
 http	= require( "facepunch.http" )
 member	= require( "facepunch.member" )
 post	= require( "facepunch.post" )
+session	= require( "facepunch.session" )
 thread	= require( "facepunch.thread" )
 
-baseURL	= "http://www.facepunch.com/"
-rootURL	= "http://www.facepunch.com"
+baseURL		= "http://www.facepunch.com/"
+rootURL		= "http://www.facepunch.com"
+loginPage	= "login.php"
 
 -------------------------------------------------------------------------------
 -- facepunch.isUp()
