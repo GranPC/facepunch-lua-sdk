@@ -8,8 +8,8 @@ local facepunch = require( "facepunch" )
 local thread    = facepunch.thread
 
 -- Setup our connector
--- Use luasocket for this test
-require( "connectors.luasocket" )
+-- Use luacurl for this test
+require( "connectors.luacurl" )
 
 -- Andrew; retrieve the thread
 print( "Grabbing page 1 of thread " .. threadID )
