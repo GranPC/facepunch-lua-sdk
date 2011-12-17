@@ -272,18 +272,6 @@ function getPage( threadID, pageNumber )
 end
 
 -------------------------------------------------------------------------------
--- thread.getPostByID()
--- Purpose: Returns 0 if the post is found, then the post object, otherwise it
---			returns 1 and nil
--- Input: threadPage - string of the requested page
---		  postID - number of post
--- Output: error code, post
--------------------------------------------------------------------------------
-function getPostByID( threadPage, postID )
-	error( "not yet implemented!", 2 )
-end
-
--------------------------------------------------------------------------------
 -- thread.getPostsInPage()
 -- Purpose: Returns all posts on a given thread page, first returns 0 if there
 --			are no errors or 1 in case of errors
