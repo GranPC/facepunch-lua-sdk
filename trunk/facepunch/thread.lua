@@ -15,6 +15,7 @@ local session = require( "facepunch.session" )
 local string = string
 local table = table
 local tonumber = tonumber
+local url = require( "facepunch.url" )
 
 module( "facepunch.thread" )
 
@@ -57,7 +58,9 @@ memberSocialLinkPattern = "" ..
 -------------------------------------------------------------------------------
 threadPagePostPattern = "" ..
 -- Post Beginning
-"<li class=.- id=\"post.-(" ..
+"<li class=.- id=\"post_" ..
+-- Post ID
+"(.-)\">.-(" ..
 -- Post Date
 ".-\"date\">(.-)</span>" ..
 -- Link to Post
@@ -252,12 +255,14 @@ end
 -------------------------------------------------------------------------------
 function getPostsInPage( threadPage )
 	local t = {}
-	for fullPost,
+	for postID,
+		fullPost,
 		postDate,
 		link,
 		postNumber
 		in string.gmatch( threadPage, threadPagePostPattern ) do
 		local post		= post()
+		post.postID		= postID
 		post.postDate	= postDate
 		post.link		= facepunch.baseURL .. string.gsub( link, "&amp;", "&" )
 		post.postNumber	= postNumber
@@ -281,4 +286,49 @@ function getPostsInPage( threadPage )
 		table.insert( t, post )
 	end
 	return t
+end
+
+-------------------------------------------------------------------------------
+-- thread.post()
+-- Purpose: Post a new reply
+-- Input: threadID - ID of the thread to post to
+--		  postData - post
+--		  securityToken - security token for this request
+-------------------------------------------------------------------------------
+function post( threadID, postData, securityToken )
+	local postFields = "" ..
+	-- Message Backup
+	"&message_backup=" .. url.escape( postData ) ..
+	-- Message
+	"&message=" .. url.escape( postData ) ..
+	-- WYSIWYG
+	"&wysiwyg=" .. "0" ..
+	-- ???
+	"s=" .. "" ..
+	-- Security Token
+	"&securitytoken=" .. ( securityToken or "guest" ) ..
+	-- Method
+	"&do=" .. "postreply" ..
+	-- ThreadID
+	"&t=" .. threadID ..
+	-- ???
+	"&p=" .. "" ..
+	-- Specified Post
+	"&specifiedpost=" .. "0" ..
+	-- Post Hash
+	"&posthash=" .. "invalid posthash" ..
+	-- Post Start Time
+	"&poststarttime=" .. "0" ..
+	-- Logged-in User (Not yet implemented)
+	-- "&loggedinuser=" .. session.getActiveSession().memberID ..
+	-- ???
+	"&multiquoteempty=" .. "" ..
+	-- Submit Button
+	-- We don't do this because we're an API.
+	--"&sbutton=" .. "Submit Reply" ..
+	-- Parse URLs
+	"&parseurl" .. "1"
+
+	local r, c = facepunch.http.post( facepunch.rootURL .. "/" .. facepunch.newReplyPage .. "?do=postreply&t=" .. threadID, session.getActiveSession(), postFields )
+	return c == 200 and 0 or 1
 end

@@ -61,6 +61,7 @@ __metatable = {
 -------------------------------------------------------------------------------
 function new()
 	local t = {
+		postID = nil,
 		postDate = nil,
 		link = nil,
 		postNumber = nil,
@@ -87,6 +88,7 @@ setmetatable( _M, metatable )
 -- post:rate()
 -- Purpose: Rates a post
 -- Input: rating - name of the rating
+--		  securityToken - security token for this request
 -------------------------------------------------------------------------------
 function post:rate( rating, securityToken )
 	if ( ratings[ rating ] and self.postRatingKeys[ rating ] ) then
@@ -114,6 +116,6 @@ end
 -- Purpose: __tostring metamethod for post
 -------------------------------------------------------------------------------
 function __metatable:__tostring()
-	if not self.postNumber then return "invalid post" end
-	return "post: " .. self.postNumber
+	if not self.postID then return "invalid post" end
+	return "post: " .. self.postID
 end

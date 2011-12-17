@@ -14,11 +14,13 @@ member	= require( "facepunch.member" )
 post	= require( "facepunch.post" )
 session	= require( "facepunch.session" )
 thread	= require( "facepunch.thread" )
+url		= require( "facepunch.url" )
 
-baseURL		= "http://www.facepunch.com/"
-rootURL		= "http://www.facepunch.com"
-ajaxPage	= "ajax.php"
-loginPage	= "login.php"
+baseURL			= "http://www.facepunch.com/"
+rootURL			= "http://www.facepunch.com"
+ajaxPage		= "ajax.php"
+loginPage		= "login.php"
+newReplyPage	= "newreply.php"
 
 -------------------------------------------------------------------------------
 -- facepunch.isUp()

@@ -18,6 +18,7 @@ end
 local posts = thread.getPostsInPage( threadPage )
 for _, post in pairs( posts ) do
 	print( post )
+	print( "      post id: " .. tostring( post.postID ) )
 	print( "      post date: " .. tostring( post.postDate ) )
 	print( "      link: " .. tostring( post.link ) )
 	print( "      post number: " .. tostring( post.postNumber ) )
