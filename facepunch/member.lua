@@ -15,10 +15,10 @@ module( "facepunch.member" )
 
 -------------------------------------------------------------------------------
 -- member.searchUser()
--- Purpose: Searchs for users with the given string in their name, returns 0
+-- Purpose: Searches for users with the given string in their name, returns 0
 --			then a table of the usernames if successful, otherwise 1 and nil
 -- Input: name - partial or full string of user, must be at least 3 characters
---		  long to receive results
+--				 long to receive results
 --		  session - option session object
 --		  securityToken - security token for making the request
 -- Output: error code, table of usernames
@@ -66,6 +66,7 @@ __metatable = {
 -------------------------------------------------------------------------------
 function new()
 	local t = {
+		userID = nil,
 		username = nil,
 		online = nil,
 		usergroup = nil,
