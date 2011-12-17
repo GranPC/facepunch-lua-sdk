@@ -8,8 +8,8 @@
 local error = error
 local facepunch = require( "facepunch" )
 local http = require( "facepunch.http" )
-local __member = require( "facepunch.member" )
-local __post = require( "facepunch.post" )
+local member = require( "facepunch.member" )
+local post = require( "facepunch.post" )
 local pairs = pairs
 local session = require( "facepunch.session" )
 local string = string
@@ -142,7 +142,7 @@ function getMembersInPage( threadPage )
 			end
 		end
 		if ( not matched ) then
-			local member			= __member()
+			local member			= member()
 			member.username			= username
 			member.online			= status == "on"
 			if ( username == displayedUsername ) then
@@ -261,7 +261,7 @@ function getPostsInPage( threadPage )
 		link,
 		postNumber
 		in string.gmatch( threadPage, threadPagePostPattern ) do
-		local post		= __post()
+		local post		= post()
 		post.postID		= postID
 		post.postDate	= postDate
 		post.link		= facepunch.baseURL .. string.gsub( link, "&amp;", "&" )
@@ -289,13 +289,13 @@ function getPostsInPage( threadPage )
 end
 
 -------------------------------------------------------------------------------
--- thread.post()
+-- thread.reply()
 -- Purpose: Post a new reply
--- Input: threadID - ID of the thread to post to
+-- Input: threadID - ID of the thread to reply to
 --		  postData - post
 --		  securityToken - security token for this request
 -------------------------------------------------------------------------------
-function post( threadID, postData, securityToken )
+function reply( threadID, postData, securityToken )
 	local postFields = "" ..
 	-- Message Backup
 	"&message_backup=" .. url.escape( postData ) ..
