@@ -6,9 +6,38 @@
 --			Gregor Steiner
 -------------------------------------------------------------------------------
 local error = error
+local facepunch = require( "facepunch" )
 local setmetatable = setmetatable
 
 module( "facepunch.post" )
+
+-------------------------------------------------------------------------------
+-- ratings
+-- Purpose: Maps rating namings to rating IDs
+-------------------------------------------------------------------------------
+ratings = {
+	[ "Agree" ]				= 1,
+	[ "Disagree" ]			= 2,
+	[ "Funny" ]				= 3,
+	[ "Informative" ]		= 4,
+	[ "Friendly" ]			= 5,
+	[ "Useful" ]			= 6,
+	[ "Optimistic" ]		= 7,
+	[ "Artistic" ]			= 8,
+	[ "Late" ]				= 9,
+	[ "Bad Spelling" ]		= 10,
+	[ "Bad Reading" ]		= 11,
+	[ "Dumb" ]				= 12,
+	[ "Zing" ]				= 13,
+	[ "Programming King" ]	= 14,
+	[ "Smarked" ]			= 15,
+	[ "Lua King" ]			= 16,
+	[ "Mapping King" ]		= 17,
+	[ "Winner" ]			= 18,
+	[ "Lua Helper" ]		= 19,
+	[ "OIFY Pinknipple" ]	= 20,
+	[ "Moustache" ]			= 21
+}
 
 -------------------------------------------------------------------------------
 -- post
@@ -59,8 +88,25 @@ setmetatable( _M, metatable )
 -- Purpose: Rates a post
 -- Input: rating - name of the rating
 -------------------------------------------------------------------------------
-function post:rate( rating )
-	error( "not yet implemented!", 2 )
+function post:rate( rating, securityToken )
+	if ( ratings[ rating ] and self.postRatingKeys[ rating ] ) then
+		local postFields = "" ..
+		-- Method
+		"do=" .. "rate_post" ..
+		-- PostID
+		"&postid=" .. self.postID ..
+		-- Rating
+		"&rating=" .. ratings[ rating ] ..
+		-- Key
+		"&key=" .. self.postRatingKeys[ rating ] ..
+		-- Securitytoken
+		"&securitytoken=" .. ( securityToken or "guest" )
+		
+		local r, c = facepunch.http.post( facepunch.rootURL .. "/" .. facepunch.ajaxPage, postFields )
+		return c == 200 and 0 or 1
+	else
+		return 1
+	end
 end
 
 -------------------------------------------------------------------------------
