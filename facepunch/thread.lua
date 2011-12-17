@@ -106,11 +106,23 @@ postRatingKeyPattern = "" ..
 
 
 -------------------------------------------------------------------------------
--- threadNumberOfPagesPattern
--- Purpose: Pattern for getting a threads maximum page number
+-- threadPageWhosReadingPattern
+-- Purpose: Pattern for finding users browsing a thread
 -------------------------------------------------------------------------------
-threadNumberOfPagesPattern = "" ..
-"class=\"first_last\"><a href=\"threads/.-/(.-)\""
+threadPageWhosReadingPattern = "" ..
+"whos_reading.-<script"
+
+-------------------------------------------------------------------------------
+-- threadPageMembersReadingPattern
+-- Purpose: Pattern for filling partial member objects from users reading a
+--			thread page. Below is what each part of the pattern represents
+-------------------------------------------------------------------------------
+threadPageMembersReadingPattern = "" ..
+-- User ID
+"username.-href=\"members/(%d+)" ..
+-- Displayed Username
+".-\">(.-)</a>"
+
 
 -------------------------------------------------------------------------------
 -- threadNamePattern
@@ -118,6 +130,13 @@ threadNumberOfPagesPattern = "" ..
 -------------------------------------------------------------------------------
 threadNamePattern = "" ..
 "<title> (.-)</title>"
+
+-------------------------------------------------------------------------------
+-- threadNumberOfPagesPattern
+-- Purpose: Pattern for getting a threads maximum page number
+-------------------------------------------------------------------------------
+threadNumberOfPagesPattern = "" ..
+"class=\"first_last\"><a href=\"threads/.-/(.-)\""
 
 
 -------------------------------------------------------------------------------
@@ -198,12 +217,45 @@ end
 
 -------------------------------------------------------------------------------
 -- thread.getMembersReading()
--- Purpose: Returns all members reading a given thread
+-- Purpose: Returns a partial member object for all members browsing a thread
+--			and the number of guests browsing if any
 -- Input: threadPage - string of the requested page
--- Output: table of members
+-- Output: table of members plus a guest key and amount
 -------------------------------------------------------------------------------
 function getMembersReading( threadPage )
-	error( "not yet implemented!", 2 )
+	local t = {}
+	local whosReading = string.match( threadPage, threadPageWhosReadingPattern )
+	for userID, displayedUsername in string.gmatch( whosReading, threadPageMembersReadingPattern ) do
+		local member	= member()
+		member.userID	= userID
+		member.online	= true
+		if ( string.find( displayedUsername, "<font color=\"red\">" ) ) then
+			member.username		= string.gsub( displayedUsername, "<font color=\"red\">", "" )
+			member.username		= string.gsub( member.username, "</font>", "" )
+			member.usergroup	= "Banned"
+		elseif ( string.find( displayedUsername, "#A06000" ) ) then
+			member.username		= string.gsub( displayedUsername, "<strong><font color=\"#A06000\">", "" )
+			member.username		= string.gsub( member.username, "</font></strong>", "" )
+			member.usergroup	= "Gold Member"
+		elseif ( string.find( displayedUsername, "#00aa00" ) ) then
+			-- TODO!!
+			member.username		= displayedUsername
+			member.usergroup	= "Moderator"
+		elseif ( string.find( displayedUsername, "<span class=\"boing\">") ) then
+			-- TODO!!
+			member.username		= displayedUsername
+			member.usergroup	= "Administrator"
+		else
+			member.username		= displayedUsername
+			member.usergroup	= "Registered User"
+		end
+		table.insert( t, member )
+	end
+	local guests = string.match( threadPage, "%((%d+) guests%)" )
+	if ( guests ) then
+		t.guests = tonumber( guests )
+	end
+	return t
 end
 
 -------------------------------------------------------------------------------
