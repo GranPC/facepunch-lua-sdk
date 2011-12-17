@@ -18,6 +18,7 @@ end
 local members = thread.getMembersInPage( threadPage )
 for _, member in pairs( members ) do
 	print( member )
+	print( "\tuser id: " .. tostring( member.userID ) )
 	print( "\tonline: " .. tostring( member.online ) )
 	print( "\tusergroup: " .. tostring( member.usergroup ) )
 	print( "\tusertitle: " .. tostring( member.usertitle ) )

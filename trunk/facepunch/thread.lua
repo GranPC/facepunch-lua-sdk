@@ -25,8 +25,10 @@ module( "facepunch.thread" )
 --			each part of the pattern represents
 -------------------------------------------------------------------------------
 threadPageMemberPattern = "" ..
+-- User ID
+"username_container.-href=\"members/(%d+)" ..
 -- Username
-"username_container.-href=\"members/.- title=\"(.-) is " ..
+".-title=\"(.-) is " ..
 -- Online Status
 "(.-)line" ..
 -- Displayed Username
@@ -128,7 +130,8 @@ threadNamePattern = "" ..
 function getMembersInPage( threadPage )
 	local t = {}
 	local matched = false
-	for username,
+	for userID,
+		username,
 		status,
 		displayedUsername,
 		usertitle,
@@ -143,6 +146,7 @@ function getMembersInPage( threadPage )
 		end
 		if ( not matched ) then
 			local member			= member()
+			member.userID			= userID
 			member.username			= username
 			member.online			= status == "on"
 			if ( username == displayedUsername ) then
