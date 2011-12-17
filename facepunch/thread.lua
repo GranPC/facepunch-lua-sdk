@@ -8,8 +8,8 @@
 local error = error
 local facepunch = require( "facepunch" )
 local http = require( "facepunch.http" )
-local member = require( "facepunch.member" )
-local post = require( "facepunch.post" )
+local __member = require( "facepunch.member" )
+local __post = require( "facepunch.post" )
 local pairs = pairs
 local session = require( "facepunch.session" )
 local string = string
@@ -142,7 +142,7 @@ function getMembersInPage( threadPage )
 			end
 		end
 		if ( not matched ) then
-			local member			= member()
+			local member			= __member()
 			member.username			= username
 			member.online			= status == "on"
 			if ( username == displayedUsername ) then
@@ -261,7 +261,7 @@ function getPostsInPage( threadPage )
 		link,
 		postNumber
 		in string.gmatch( threadPage, threadPagePostPattern ) do
-		local post		= post()
+		local post		= __post()
 		post.postID		= postID
 		post.postDate	= postDate
 		post.link		= facepunch.baseURL .. string.gsub( link, "&amp;", "&" )
@@ -329,6 +329,6 @@ function post( threadID, postData, securityToken )
 	-- Parse URLs
 	"&parseurl" .. "1"
 
-	local r, c = facepunch.http.post( facepunch.rootURL .. "/" .. facepunch.newReplyPage .. "?do=postreply&t=" .. threadID, session.getActiveSession(), postFields )
+	local r, c = http.post( facepunch.rootURL .. "/" .. facepunch.newReplyPage .. "?do=postreply&t=" .. threadID, session.getActiveSession(), postFields )
 	return c == 200 and 0 or 1
 end
