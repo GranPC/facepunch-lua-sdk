@@ -324,7 +324,7 @@ function reply( threadID, postData, securityToken )
 	-- Post Start Time
 	"&poststarttime=" .. "0" ..
 	-- Logged-in User (Not yet implemented)
-	-- "&loggedinuser=" .. session.getActiveSession().memberID ..
+	-- "&loggedinuser=" .. session.getActiveSession().userID ..
 	-- ???
 	"&multiquoteempty=" .. "" ..
 	-- Submit Button
