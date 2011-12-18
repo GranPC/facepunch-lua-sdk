@@ -248,7 +248,7 @@ function getMembersReading( threadPage )
 			member.username		= string.gsub( member.username, "</font></strong>", "" )
 			member.usergroup	= "Gold Member"
 		elseif ( string.find( displayedUsername, "#00aa00" ) ) then
-			member.username		= string.gsub( displayedUsername, "<span style=\"color:#00aa00;font-weight:bold;\">", "" )
+			member.username		= string.gsub( displayedUsername, "<span style=\"color:#00aa00;font%-weight:bold;\">", "" )
 			member.username		= string.gsub( member.username, "</span>", "" )
 			member.usergroup	= "Moderator"
 		elseif ( string.find( displayedUsername, "<span class=\"boing\">") ) then
