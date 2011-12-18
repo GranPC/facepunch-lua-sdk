@@ -3,7 +3,7 @@
 
 local threadID = 1144771
 local threadName = ""
-local threadPages = -1
+local threadPageNumber, threadPageCount = -1, -1
 
 local startTime = os.time()
 
@@ -21,10 +21,10 @@ do
 	end
 
 	threadName = thread.getName( threadPage )
-	threadPages = thread.getNumberOfPages( threadPage )
+	threadPageNumber, threadPageCount = thread.getPaginationInfo( threadPage )
 end
 
 local endTime = os.time()
 print( "Took " .. tostring( endTime - startTime ) .. " seconds!" )
 
-print( "The thread '" .. threadName .. "' contains " .. threadPages .. " pages!" )
+print( "The thread '" .. threadName .. "' contains " .. threadPageCount .. " pages!" )
