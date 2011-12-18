@@ -27,7 +27,6 @@ module( "facepunch.thread" )
 canGuestViewPagePattern = "" ..
 "blocksubhead\"><center>Sorry %- You can't view this page!"
 
-
 -------------------------------------------------------------------------------
 -- threadPageMemberPattern
 -- Purpose: Pattern for filling member objects on a thread page. Below is what
@@ -81,7 +80,6 @@ threadPagePostPattern = "" ..
 -- End
 ".-</li>)"
 
-
 -------------------------------------------------------------------------------
 -- postRatingResultSpanPattern
 -- Purpose: Pattern for getting the rating_results div, which may not be there
@@ -97,7 +95,6 @@ postRatingResultSpanPattern = "" ..
 postRatingResultPattern = "" ..
 "<img src=\".-\" alt=\"(.-)\" />.-<strong>(%d-)</strong>"
 
-
 -------------------------------------------------------------------------------
 -- postRatingKeyDivPattern
 -- Purpose: Pattern for getting the postrating div, which is not there if you
@@ -112,7 +109,6 @@ postRatingKeyDivPattern = "" ..
 -------------------------------------------------------------------------------
 postRatingKeyPattern = "" ..
 "<a href=\"#\".-RatePost%( '.-', '.-', '(.-)' %);\"><img src=\".-\" alt=\"(.-)\" /></a>"
-
 
 -------------------------------------------------------------------------------
 -- threadPageWhosReadingPattern
@@ -132,7 +128,6 @@ threadPageMembersReadingPattern = "" ..
 -- Displayed Username
 ".-\">(.-)</a>"
 
-
 -------------------------------------------------------------------------------
 -- threadNamePattern
 -- Purpose: Pattern for getting the threads name
@@ -141,12 +136,11 @@ threadNamePattern = "" ..
 "<title> (.-)</title>"
 
 -------------------------------------------------------------------------------
--- threadNumberOfPagesPattern
--- Purpose: Pattern for getting a threads maximum page number
+-- threadPaginationPattern
+-- Purpose: Pattern for retrieving pagination info
 -------------------------------------------------------------------------------
-threadNumberOfPagesPattern = "" ..
-"class=\"first_last\"><a href=\"threads/.-/(.-)\""
-
+threadPaginationPattern = "" ..
+"pagination .-Page (%d+) of (%d+)"
 
 -------------------------------------------------------------------------------
 -- thread.canGuestViewPage()
@@ -285,18 +279,6 @@ function getName( threadPage )
 end
 
 -------------------------------------------------------------------------------
--- thread.getNumberOfPages()
--- Purpose: Returns the total ammount of pages in a thread
--- Input: threadID
--- Output: number of pages
--------------------------------------------------------------------------------
-function getNumberOfPages( threadPage )
-	local n = string.match( threadPage, threadNumberOfPagesPattern )
-	if ( n == nil ) then return 1 end
-	return tonumber( string.gsub( n, "%?s=%w+", "" ), 10 )
-end
-
--------------------------------------------------------------------------------
 -- thread.getPage()
 -- Purpose: Returns 0 if the page is retrieved successfully, then the thread
 --			page by ID and page number, if provided, otherwise it returns 1 and
@@ -316,6 +298,19 @@ function getPage( threadID, pageNumber )
 	else
 		return 1, nil
 	end
+end
+
+-------------------------------------------------------------------------------
+-- thread.getPaginationInfo()
+-- Purpose: Returns the page number of the thread page provided, and the total
+--			number of pages in the thread
+-- Input: threadPage - string of the requested page
+-- Output: current page number, page count
+-------------------------------------------------------------------------------
+function getPaginationInfo( threadPage )
+	local currentPage, pageCount = string.match( threadPage, threadPaginationPattern )
+	if ( currentPage == nil and pageCount == nil ) then return 1, 1 end
+	return tonumber( currentPage ), tonumber( pageCount )
 end
 
 -------------------------------------------------------------------------------
