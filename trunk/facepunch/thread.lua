@@ -68,7 +68,7 @@ memberSocialLinkPattern = "" ..
 -------------------------------------------------------------------------------
 threadPagePostPattern = "" ..
 -- Post Beginning
-"<li class=.- id=\"post_" ..
+"<li class=\"postbitlegacy .- id=\"post_" ..
 -- Post ID
 "(.-)\">.-(" ..
 -- Post Date
