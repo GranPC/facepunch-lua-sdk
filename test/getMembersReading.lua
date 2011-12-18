@@ -27,19 +27,24 @@ session.setActiveSession( mySession )
 -- Andrew; retrieve a thread, page 1
 local error, threadPage = -1, ""
 while error ~= 0 do
-	error, threadPage = thread.getPage( 1144771, 1 )
+	error, threadPage = thread.getPage( 1125443, 1 )
 end
 
 -- Andrew; prints all users who're reading WAYWO December 2011
 local members = thread.getMembersReading( threadPage )
+local memberCount = 0
+local guestCount = 0
 for k, v in pairs( members ) do
-	if ( k ~= "guests" ) then
+	if ( k == "guests" ) then
+		guestCount = v
+	else
 		print( v )
 		print( "\tuser id: " .. tostring( v.userID ) )
 		print( "\tonline: " .. tostring( v.online ) )
 		print( "\tusergroup: " .. tostring( v.usergroup ) )
 		print( "\n" )
-	else
-		print( "guests: " .. v )
+		memberCount = memberCount + 1
 	end
 end
+print( "members: " .. memberCount )
+print( "guests: " .. guestCount )

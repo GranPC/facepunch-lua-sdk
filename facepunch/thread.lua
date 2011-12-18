@@ -20,6 +20,15 @@ local url = require( "facepunch.url" )
 module( "facepunch.thread" )
 
 -------------------------------------------------------------------------------
+-- canGuestViewPagePattern
+-- Purpose: Pattern for detecting if guests can view a page, or if a session is
+--			required to view
+-------------------------------------------------------------------------------
+canGuestViewPagePattern = "" ..
+"blocksubhead\"><center>Sorry %- You can't view this page!"
+
+
+-------------------------------------------------------------------------------
 -- threadPageMemberPattern
 -- Purpose: Pattern for filling member objects on a thread page. Below is what
 --			each part of the pattern represents
@@ -140,6 +149,16 @@ threadNumberOfPagesPattern = "" ..
 
 
 -------------------------------------------------------------------------------
+-- thread.canGuestViewPage()
+-- Purpose: Returns true if a session is not required to view the page
+-- Input: threadPage - string of the requested page
+-- Output: boolean
+-------------------------------------------------------------------------------
+function canGuestViewPage( threadPage )
+	return string.match( threadPage, canGuestViewPagePattern ) == nil and true or false
+end
+
+-------------------------------------------------------------------------------
 -- thread.getMembersInPage()
 -- Purpose: Returns all members that have posted on a given thread page, first
 --			returns 0 if there are no errors or 1 in case of errors
@@ -190,10 +209,7 @@ function getMembersInPage( threadPage )
 			if ( avatar == "" ) then
 				member.avatar		= nil
 			else
-				for url in string.gmatch( avatar, ".-img src=\"(.-)\"" ) do
-					avatar			= url
-				end
-				member.avatar		= facepunch.rootURL .. avatar
+				member.avatar		= facepunch.rootURL .. string.match( avatar, ".-img src=\"(.-)\"" )
 			end
 			member.joinDate			= string.gsub( joinDate, "^%s*(.-)%s*$", "%1" )
 			member.postCount		= postCount
