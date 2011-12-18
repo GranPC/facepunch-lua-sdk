@@ -25,23 +25,27 @@ function facepunch.http.get( URL, session )
 		headers = headers
 	})
 	r = table.concat( t, "" )
-	t = {}
-	for k, v in pairs( h ) do
-		if ( k == "set-cookie" ) then
-			-- We remove expiration data here since it has commas in the given
-			-- timestamps, so it doesn't break us separating individual cookies
-			-- below
-			v = string.gsub( v, "(expires=.-; )", "" )
-			-- Grab set-cookie and append an additional separator for gmatch
-			-- convenience
-			v = v .. ", "
-			for cookie in string.gmatch( v, "(.-), " ) do
-				cookie = string.match( cookie, "(.-);" )
-				table.insert( t, cookie )
+	if ( h ) then
+		t = {}
+		for k, v in pairs( h ) do
+			if ( k == "set-cookie" ) then
+				-- We remove expiration data here since it has commas in the given
+				-- timestamps, so it doesn't break us separating individual cookies
+				-- below
+				v = string.gsub( v, "(expires=.-; )", "" )
+				-- Grab set-cookie and append an additional separator for gmatch
+				-- convenience
+				v = v .. ", "
+				for cookie in string.gmatch( v, "(.-), " ) do
+					cookie = string.match( cookie, "(.-);" )
+					table.insert( t, cookie )
+				end
 			end
 		end
+		cookie = table.concat( t, "; " )
+	else
+		cookie = nil
 	end
-	cookie = table.concat( t, "; " )
 	return r, c, cookie
 end
 
@@ -64,22 +68,26 @@ function facepunch.http.post( URL, session, postData )
 		headers = headers,
 	}, postData )
 	r = table.concat( t, "" )
-	t = {}
-	for k, v in pairs( h ) do
-		if ( k == "set-cookie" ) then
-			-- We remove expiration data here since it has commas in the given
-			-- timestamps, so it doesn't break us separating individual cookies
-			-- below
-			v = string.gsub( v, "(expires=.-; )", "" )
-			-- Grab set-cookie and append an additional separator for gmatch
-			-- convenience
-			v = v .. ", "
-			for cookie in string.gmatch( v, "(.-), " ) do
-				cookie = string.match( cookie, "(.-);" )
-				table.insert( t, cookie )
+	if ( h ) then
+		t = {}
+		for k, v in pairs( h ) do
+			if ( k == "set-cookie" ) then
+				-- We remove expiration data here since it has commas in the given
+				-- timestamps, so it doesn't break us separating individual cookies
+				-- below
+				v = string.gsub( v, "(expires=.-; )", "" )
+				-- Grab set-cookie and append an additional separator for gmatch
+				-- convenience
+				v = v .. ", "
+				for cookie in string.gmatch( v, "(.-), " ) do
+					cookie = string.match( cookie, "(.-);" )
+					table.insert( t, cookie )
+				end
 			end
 		end
+		cookie = table.concat( t, "; " )
+	else
+		cookie = nil
 	end
-	cookie = table.concat( t, "; " )
 	return r, c, cookie
 end
