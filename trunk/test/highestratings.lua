@@ -23,7 +23,9 @@ local highlights = {}
 
 local startTime = os.time()
 
-for i = 1, thread.getNumberOfPages( threadPage ) do
+local _, pageCount = thread.getPaginationInfo( threadPage )
+
+for i = 1, pageCount do
   -- Andrew; This condition allows us to reuse the first page we just got
   -- above when we had to find out how many pages the thread had, so we could
   -- establish how many times to execute this loop. By checking if threadPage
