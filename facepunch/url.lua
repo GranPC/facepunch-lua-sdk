@@ -6,6 +6,7 @@
 --			Gregor Steiner
 -------------------------------------------------------------------------------
 local string = string
+local tonumber = tonumber
 
 module( "facepunch.url" )
 
@@ -18,5 +19,17 @@ module( "facepunch.url" )
 function escape( s )
 	return string.gsub( s, "([^A-Za-z0-9_])", function( c )
 		return string.format( "%%%02x", string.byte( c ) )
-	end)
+	end )
+end
+
+-------------------------------------------------------------------------------
+-- url.unescape()
+-- Purpose: Decodes a string into its unescaped representation
+-- Input: s - binary string to be decoded
+-- Output: unescaped representation of string binary
+-------------------------------------------------------------------------------
+function unescape( s )
+    return string.gsub( s, "%%(%x%x)", function( hex )
+        return string.char( tonumber( hex, 16 ) )
+    end )
 end
