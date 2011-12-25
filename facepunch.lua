@@ -15,6 +15,7 @@ post	= require( "facepunch.post" )
 session	= require( "facepunch.session" )
 thread	= require( "facepunch.thread" )
 url		= require( "facepunch.url" )
+forums  = require( "facepunch.forums" )
 
 baseURL			= "http://www.facepunch.com/"
 rootURL			= "http://www.facepunch.com"
