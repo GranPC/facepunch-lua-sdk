@@ -11,6 +11,7 @@ local http = require( "facepunch.http" )
 local post = require( "facepunch.post" )
 local pairs = pairs
 local session = require( "facepunch.session" )
+local thread = require( "facepunch.thread" )
 local string = string
 local table = table
 local tonumber = tonumber
@@ -18,6 +19,11 @@ local setmetatable = setmetatable
 
 module( "facepunch.forums" )
 
+-------------------------------------------------------------------------------
+-- indexPageForumPattern
+-- Purpose: Pattern for creating and filling the forum objects from the
+--			homepage.
+-------------------------------------------------------------------------------
 indexPageForumPattern = "" ..
 -- Forum ID
 "<tr id=\"forum(%d-)\"" ..
@@ -35,6 +41,30 @@ indexPageForumPattern = "" ..
 ".-Go to first unread post in thread '(.-)'"..
 -- Last Post Date, URL
 ".-\"lastpostdate\">(.-)  <a href=\"(.-)\""
+
+-------------------------------------------------------------------------------
+-- forumPageThreadPattern
+-- Purpose: Pattern for filling forum objects from a thread page.
+-------------------------------------------------------------------------------
+forumPageThreadPattern = "" ..
+-- Properties, thread ID
+"<tr class=\"threadbit (.-)\" id=\"thread_(%d-)\"" ..
+-- Thread icon, name
+".-<img src=\"(.-)\" alt=\"(.-)\" border=\"0\" />" ..
+-- Thread title
+".-thread_title_%d-\">(.-)</a>" ..
+-- Has images?
+"(.-)</h3>" ..
+-- Author UID, username, readers?
+".-<div class=\"author\">.-<a href=\"members/(.-)%-.-\">(.-)</a>(.-)\n" ..
+-- Last Post Date
+".-<dd>(.-)</dd>" ..
+-- Last Poster UID, username, reply link
+".-by <a href=\"members/(.-)%-.-\">(.-)</a> <a href=\"(.-)\"" ..
+-- Reply count
+".-\">(.-)</a>" ..
+-- View count
+".-<span>(.-)</span>"
 
 -------------------------------------------------------------------------------
 -- forum
@@ -96,7 +126,6 @@ function __metatable:__tostring()
 	return "forum: " .. self.forumName
 end
 
-
 -------------------------------------------------------------------------------
 -- forums.getListing()
 -- Purpose: Returns 0 if the page is retrieved successfully, then the forum
@@ -142,4 +171,70 @@ function getListing()
 	else
 		return 1, nil
 	end
+end
+
+-------------------------------------------------------------------------------
+-- forums.getPage()
+-- Purpose: Returns 0 if the page is retrieved successfully, then the forum
+--			page by ID and page number, if provided, otherwise it returns 1 and
+--			nil
+-- Input: forumID - ID of the forum to get
+--		  pageNumber - number of the page to get
+-- Output: error code, forum page
+-------------------------------------------------------------------------------
+function getPage( forumID, pageNumber )
+	pageNumber = pageNumber or ""
+	if ( pageNumber ~= "" ) then
+		pageNumber = "/" .. pageNumber
+	end
+	local r, c = http.get( facepunch.baseURL .. "/forums/" .. forumID .. pageNumber, session.getActiveSession() )
+	if ( c == 200 ) then
+		return 0, r
+	else
+		return 1, nil
+	end
+end
+
+-------------------------------------------------------------------------------
+-- forums.getThreadsInPage()
+-- Purpose: Returns a list of threads in a forum
+-- Input: forumPage - string of the requested page
+-- Output: table
+-------------------------------------------------------------------------------
+function getThreadsInPage( forumPage )
+	local t = {}
+	for properties,
+		threadID,
+		threadIconURL,
+		threadIcon,
+		threadTitle,
+		hasImages,
+		authorID,
+		authorName,
+		threadReaders,
+		lastPostDate,
+		lastPosterID,
+		lastPosterName,
+		lastPostURL,
+		replies,
+		views
+		in string.gmatch( forumPage, forumPageThreadPattern ) do
+		local thread = thread.new()
+		thread.threadID = tonumber( threadID )
+		thread.threadIconURL = threadIconURL
+		thread.threadIcon = threadIcon
+		thread.threadTitle = threadTitle
+		thread.hasImages = string.find( hasImages, "images" ) and true or false
+		thread.authorID = tonumber( authorID )
+		thread.authorName = authorName
+		thread.threadReaders = string.match( threadReaders, "(%d-) read" )
+		thread.lastPostDate = lastPostDate
+		thread.lastPosterID = tonumber( lastPosterID )
+		thread.lastPosterName = lastPosterName
+		thread.lastPostURL = lastPostURL
+		thread.replyCount = tonumber( string.gsub( replies, ",", "" ), 10 )
+		thread.viewCount = tonumber( string.gsub( views, ",", "" ), 10 )
+		table.insert(t, thread)
+	end
+	return t
 end
