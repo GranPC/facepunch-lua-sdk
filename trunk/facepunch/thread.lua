@@ -15,6 +15,7 @@ local session = require( "facepunch.session" )
 local string = string
 local table = table
 local tonumber = tonumber
+local setmetatable = setmetatable
 local url = require( "facepunch.url" )
 
 module( "facepunch.thread" )
@@ -398,4 +399,68 @@ function reply( threadID, postData, securityToken )
 
 	local r, c = http.post( facepunch.rootURL .. "/" .. facepunch.newReplyPage .. "?do=postreply&t=" .. threadID, session.getActiveSession(), postFields )
 	return c == 200 and 0 or 1
+end
+
+
+-------------------------------------------------------------------------------
+-- thread
+-- Purpose: Class index
+-------------------------------------------------------------------------------
+local thread = {}
+
+-------------------------------------------------------------------------------
+-- __metatable
+-- Purpose: Class metatable
+-------------------------------------------------------------------------------
+__metatable = {
+	__index = thread,
+	__type = "thread"
+}
+
+-------------------------------------------------------------------------------
+-- thread.new()
+-- Purpose: Creates a new thread object
+-- Output: thread
+-------------------------------------------------------------------------------
+function new()
+	local t = {
+		threadID = nil,
+		threadTitle = nil,
+		threadIcon = nil,
+		threadIconURL = nil,
+		hasImages = nil,
+		authorID = nil,
+		authorName = nil,
+		threadReaders = nil,
+		lastPosterID = nil,
+		lastPosterName = nil,
+		lastPostDate = nil,
+		lastPostURL = nil,
+		viewCount = nil,
+		replyCount = nil
+	}
+	setmetatable( t, __metatable )
+	return t
+end
+
+-------------------------------------------------------------------------------
+-- thread()
+-- Purpose: Shortcut to thread.new()
+-- Output: thread
+-------------------------------------------------------------------------------
+local metatable = {
+	__call = function( _, ... )
+		return new( ... )
+	end
+}
+setmetatable( _M, metatable )
+
+-------------------------------------------------------------------------------
+-- thread:__tostring()
+-- Purpose: Returns a string representation of a thread
+-- Output: string
+-------------------------------------------------------------------------------
+function __metatable:__tostring()
+	if not self.threadTitle then return "invalid thread" end
+	return "thread: " .. self.threadTitle
 end
