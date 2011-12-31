@@ -9,13 +9,13 @@ local require = require
 
 module( "facepunch" )
 
+forums  = require( "facepunch.forums" )
 http	= require( "facepunch.http" )
 member	= require( "facepunch.member" )
 post	= require( "facepunch.post" )
 session	= require( "facepunch.session" )
 thread	= require( "facepunch.thread" )
 url		= require( "facepunch.url" )
-forums  = require( "facepunch.forums" )
 
 baseURL			= "http://www.facepunch.com/"
 rootURL			= "http://www.facepunch.com"
