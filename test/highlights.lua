@@ -84,6 +84,6 @@ for rating, t in pairs( highlights ) do
       end
       print( i .. " (x" .. post.postRatings[ rating ] .. "): " .. post.link )
     end
-    print()
+    print( "\n" )
   end
 end
