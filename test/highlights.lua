@@ -8,7 +8,9 @@ local highlightsSize  = 25
 local ratingsRelevant = {
   "Programming King",
   "Artistic",
-  "Winner"
+  "Winner",
+  -- Added for 2012
+  "Useful"
 }
 local threadID        = 1144771
 
