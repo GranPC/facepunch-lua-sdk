@@ -20,9 +20,22 @@ local setmetatable = setmetatable
 module( "facepunch.forums" )
 
 -------------------------------------------------------------------------------
--- indexPageForumPattern
+-- indexPageForumCategoryPattern
 -- Purpose: Pattern for creating and filling the forum objects from the
 --			homepage.
+-------------------------------------------------------------------------------
+indexPageForumCategoryPattern = "" ..
+-- Category ID
+"forums\" id=\"cat(%d-)\"" ..
+-- Name
+".-<h2><a href=\"forums/.-\">(.-)</a></h2>" ..
+-- Forums
+".-</thead>(.-)</table>"
+
+-------------------------------------------------------------------------------
+-- indexPageForumPattern
+-- Purpose: Pattern for creating and filling the forum objects from the
+--			"forums" result of indexPageForumCategoryPattern.
 -------------------------------------------------------------------------------
 indexPageForumPattern = "" ..
 -- Forum ID
@@ -44,7 +57,7 @@ indexPageForumPattern = "" ..
 
 -------------------------------------------------------------------------------
 -- forumPageThreadPattern
--- Purpose: Pattern for filling forum objects from a thread page.
+-- Purpose: Pattern for filling thread objects from a forum page.
 -------------------------------------------------------------------------------
 forumPageThreadPattern = "" ..
 -- Properties, thread ID
@@ -136,36 +149,42 @@ function getListing()
 	local r, c = http.get( facepunch.baseURL .. "/forum.php", session.getActiveSession() )
 	if ( c == 200 ) then
 		local ret = {}
-		for forumID,
-			threadCount,
-			postCount,
-			forumName,
-			viewers,
-			forumDescription,
-			lastPosterID,
-			lastPosterName,
-			lastThreadName,
-			lastPostDate,
-			lastPostURL in string.gmatch( r, indexPageForumPattern ) do
+		for catID,
+			catName,
+			forums in string.gmatch( r, indexPageForumCategoryPattern ) do
+			for forumID,
+				threadCount,
+				postCount,
+				forumName,
+				viewers,
+				forumDescription,
+				lastPosterID,
+				lastPosterName,
+				lastThreadName,
+				lastPostDate,
+				lastPostURL in string.gmatch( forums, indexPageForumPattern ) do
 
-			local retForum = new()
-			retForum.forumID = tonumber( forumID )
+				local retForum = new()
+				retForum.forumID = tonumber( forumID )
 
-			-- need to specify base, otherwise it takes the second return value for gsub
-			retForum.threadCount = tonumber( string.gsub( threadCount, ",", "" ), 10 )
-			retForum.postCount = tonumber( string.gsub( postCount, ",", "" ), 10 )
+				-- need to specify base, otherwise it takes the second return value for gsub
+				retForum.threadCount = tonumber( string.gsub( threadCount, ",", "" ), 10 )
+				retForum.postCount = tonumber( string.gsub( postCount, ",", "" ), 10 )
 
-			retForum.forumName = forumName
-			retForum.viewers = tonumber( string.gsub( viewers, ",", "" ), 10 )
-			retForum.forumDescription = forumDescription
-			retForum.lastPosterID = tonumber( lastPosterID )
-			retForum.lastPosterName = lastPosterName
-			retForum.lastThreadName = lastThreadName
-			retForum.lastPostDate = lastPostDate
-			retForum.lastPostURL = facepunch.baseURL .. lastPostURL
+				retForum.forumName = forumName
+				retForum.viewers = tonumber( string.gsub( viewers, ",", "" ), 10 )
+				retForum.forumDescription = forumDescription
+				retForum.lastPosterID = tonumber( lastPosterID )
+				retForum.lastPosterName = lastPosterName
+				retForum.lastThreadName = lastThreadName
+				retForum.lastPostDate = lastPostDate
+				retForum.lastPostURL = facepunch.baseURL .. lastPostURL
 
-			table.insert( ret, retForum )
+				retForum.category = catName
 
+				table.insert( ret, retForum )
+
+				end
 			end
 		return 0, ret
 	else

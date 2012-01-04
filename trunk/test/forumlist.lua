@@ -11,7 +11,6 @@ require( "connectors.luacurl" )
 
 io.write( "Login? y/N\n> ") -- there may be some other forums guests can't see
 local ans = io.read()
-print(string.lower(ans))
 if ( string.lower( ans ) == "y" ) then
 	io.write( "Username: " )
 	local username = io.read()
@@ -45,4 +44,5 @@ for k, v in pairs( list ) do
 	print( "  last thread name:  "..v.lastThreadName )
 	print( "  last post date:    "..v.lastPostDate )
 	print( "  last post URL:     "..v.lastPostURL )
+	print( "  category:          "..v.category )
 end
