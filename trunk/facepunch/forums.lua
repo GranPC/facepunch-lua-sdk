@@ -66,7 +66,7 @@ forumPageThreadPattern = "" ..
 ".-<img src=\"(.-)\" alt=\"(.-)\" border=\"0\" />" ..
 -- Thread title
 ".-thread_title_%d-\">(.-)</a>" ..
--- Has images?
+-- Has images / new posts?
 "(.-)</h3>" ..
 -- Author UID, username, readers?
 ".-<div class=\"author\">.-<a href=\"members/(.-)%-.-\">(.-)</a>(.-)\n" ..
@@ -253,6 +253,8 @@ function getThreadsInPage( forumPage )
 		thread.lastPostURL = lastPostURL
 		thread.replyCount = tonumber( string.gsub( replies, ",", "" ), 10 )
 		thread.viewCount = tonumber( string.gsub( views, ",", "" ), 10 )
+	
+		thread.newPosts = tonumber( string.match( hasImages, "(%d-) new posts" ) )
 		table.insert(t, thread)
 	end
 	return t
