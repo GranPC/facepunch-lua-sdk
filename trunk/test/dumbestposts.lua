@@ -78,15 +78,8 @@ local endTime = os.time()
 print( "\nTook " .. tostring( endTime - startTime ) .. " seconds!\n" )
 
 print( targetUsername .. "'s top " .. highlightsRating .. " posts: " )
-local count = 0
 for i, post in ipairs( highlights ) do
   if ( post.postRatings[ highlightsRating ] ~= 0 ) then
     print( i .. " (x" .. post.postRatings[ highlightsRating ] .. "): " .. post.link )
-  else
-    count = count + 1
   end
-end
-
-if ( count == 0 ) then
-  print( "None!")
 end
