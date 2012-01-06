@@ -491,7 +491,8 @@ function new()
 		lastPostDate = nil,
 		lastPostURL = nil,
 		viewCount = nil,
-		replyCount = nil
+		replyCount = nil,
+		newPosts = nil
 	}
 	setmetatable( t, __metatable )
 	return t
