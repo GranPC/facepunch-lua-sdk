@@ -20,6 +20,7 @@ local error = -1
 while error ~= 0 do
 	error = mySession:login()
 end
+print( "Logged in!" )
 
 session.setActiveSession( mySession )
 
