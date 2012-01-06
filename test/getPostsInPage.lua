@@ -2,19 +2,35 @@
 -- usage: lua test\getPostsInPage.lua
 
 local facepunch	= require( "facepunch" )
+local session	= facepunch.session
 local thread	= facepunch.thread
 
 -- Setup our connector
 -- Use luacurl for this test
 require( "connectors.luacurl" )
 
+io.write( "Username: " )
+local username = io.read()
+io.write( "Password: " )
+local password = io.read()
+
+local mySession = session( username, password )
+print( "Logging in as " .. username .. "..." )
+local error = -1
+while error ~= 0 do
+	error = mySession:login()
+end
+print( "Logged in!" )
+
+session.setActiveSession( mySession )
+
 -- Andrew; retrieve a thread, page 1
 local error, threadPage = -1, ""
 while error ~= 0 do
-	error, threadPage = thread.getPage( 1144771, 1 )
+	error, threadPage = thread.getPage( 1151723, 1 )
 end
 
--- Andrew; prints all post objects parsed on page 1 of WAYWO December 2011
+-- Andrew; prints all post objects parsed on page 1 of WAYWO January 2012
 local posts = thread.getPostsInPage( threadPage )
 for _, post in pairs( posts ) do
 	print( post )

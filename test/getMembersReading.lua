@@ -27,10 +27,10 @@ session.setActiveSession( mySession )
 -- Andrew; retrieve a thread, page 1
 local error, threadPage = -1, ""
 while error ~= 0 do
-	error, threadPage = thread.getPage( 1125443, 1 )
+	error, threadPage = thread.getPage( 1151723, 1 )
 end
 
--- Andrew; prints all users who're reading WAYWO December 2011
+-- Andrew; prints all users who're reading WAYWO January 2012
 local members = thread.getMembersReading( threadPage )
 local memberCount = 0
 local guestCount = 0
