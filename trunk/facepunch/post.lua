@@ -65,6 +65,7 @@ function new()
 		postDate = nil,
 		link = nil,
 		postNumber = nil,
+		userinfo = nil,
 		postRatings = nil,
 		postRatingKeys = nil
 	}

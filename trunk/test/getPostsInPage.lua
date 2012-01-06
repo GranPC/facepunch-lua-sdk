@@ -38,6 +38,7 @@ for _, post in pairs( posts ) do
 	print( "      post date: " .. tostring( post.postDate ) )
 	print( "      link: " .. tostring( post.link ) )
 	print( "      post number: " .. tostring( post.postNumber ) )
+	print( "      user info: " .. tostring( post.userinfo ) )
 	print( "      post ratings: " .. ( post.postRatings == nil and tostring( post.postRatings ) or "" ) )
 	if ( post.postRatings ) then
 		for name, amount in pairs( post.postRatings ) do

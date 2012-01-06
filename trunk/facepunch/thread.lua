@@ -78,6 +78,8 @@ threadPagePostPattern = "" ..
 ".-post%d-\" href=\"(.-)\"" ..
 -- Post Number
 ".-postcount%d-\" name=\"(.-)\"" ..
+-- Userinfo
+".-" .. threadPageMemberPattern ..
 -- End
 ".-</li>)"
 
@@ -323,11 +325,22 @@ end
 -------------------------------------------------------------------------------
 function getPostsInPage( threadPage )
 	local t = {}
-	for postID,
+	for -- post
+		postID,
 		fullPost,
 		postDate,
 		link,
-		postNumber
+		postNumber,
+		-- post.userinfo
+		userID,
+		username,
+		status,
+		displayedUsername,
+		usertitle,
+		avatar,
+		joinDate,
+		postCount,
+		links
 		in string.gmatch( threadPage, threadPagePostPattern ) do
 		local post		= post()
 		post.postID		= postID
@@ -351,6 +364,47 @@ function getPostsInPage( threadPage )
 			end
 		end
 
+		local member			= member()
+		member.userID			= userID
+		member.username			= username
+		member.online			= status == "on"
+		if ( username == displayedUsername ) then
+			member.usergroup	= "Registered User"
+		elseif ( string.find( displayedUsername, "<font color=\"red\">" ) ) then
+			member.usergroup	= "Banned"
+		elseif ( string.find( displayedUsername, "#A06000" ) ) then
+			member.usergroup	= "Gold Member"
+		elseif ( string.find( displayedUsername, "#00aa00" ) ) then
+			member.usergroup	= "Moderator"
+		elseif ( string.find( displayedUsername, "<span class=\"boing\">") ) then
+			member.usergroup	= "Administrator"
+		end
+		member.usertitle		= string.gsub( usertitle, "^%s*(.-)%s*$", "%1" )
+		if ( string.find( member.usertitle, "<span" ) ) then
+			member.usertitle	= member.usertitle .. "</span>"
+		end
+		if ( member.usertitle == "" ) then
+			member.usertitle	= nil
+		end
+		avatar					= string.gsub( avatar, "^%s*(.-)%s*$", "%1" )
+		if ( avatar == "" ) then
+			member.avatar		= nil
+		else
+			member.avatar		= facepunch.rootURL .. string.match( avatar, ".-img src=\"(.-)\"" )
+		end
+		member.joinDate			= string.gsub( joinDate, "^%s*(.-)%s*$", "%1" )
+		member.postCount		= postCount
+		member.postCount		= string.gsub( member.postCount, "^%s*(.-)%s*$", "%1" )
+		member.postCount		= tonumber( string.gsub( member.postCount, ",", "" ), 10 )
+
+		member.links = {}
+		local hasLinks = false
+		for url, name in string.gmatch( links, memberSocialLinkPattern ) do
+			if ( hasLinks == false ) then hasLinks = true end
+			member.links[ name ] = url
+		end
+		if ( not hasLinks ) then member.links = nil end
+		post.userinfo = member
 		table.insert( t, post )
 	end
 	return t
