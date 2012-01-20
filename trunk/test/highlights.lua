@@ -8,18 +8,32 @@ local highlightsSize  = 25
 local ratingsRelevant = {
   "Programming King",
   "Artistic",
-  "Winner",
-  -- Added for 2012
-  "Useful"
+  "Winner"
 }
-local threadID        = 1144771
+local threadID        = 1151723
 
 local facepunch = require( "facepunch" )
 local thread    = facepunch.thread
+local session   = facepunch.session
 
 -- Setup our connector
--- Use luacurl for this test
-require( "connectors.luacurl" )
+-- Use luasocket for this test
+require( "connectors.luasocket" )
+
+io.write( "Username: " )
+local username = io.read()
+io.write( "Password: " )
+local password = io.read()
+
+local mySession = session( username, password )
+print( "Logging in as " .. username .. "..." )
+local error = -1
+while error ~= 0 do
+  error = mySession:login()
+end
+print( "Logged in!" )
+
+session.setActiveSession( mySession )
 
 -- Andrew; retrieve the thread
 print( "Grabbing page 1 of thread " .. threadID )
@@ -84,6 +98,7 @@ for rating, t in pairs( highlights ) do
       if ( i == 1 ) then
         print( rating .. ": " )
       end
+      print( post.userinfo.username .. " posted:" )
       print( i .. " (x" .. post.postRatings[ rating ] .. "): " .. post.link )
     end
     print( "\n" )
