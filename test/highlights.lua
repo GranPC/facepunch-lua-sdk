@@ -10,7 +10,7 @@ local ratingsRelevant = {
   "Artistic",
   "Winner"
 }
-local threadID        = 1151723
+local threadID        = 1160420
 
 local facepunch = require( "facepunch" )
 local thread    = facepunch.thread
@@ -92,15 +92,17 @@ local function hasValue( t, val )
   return false
 end
 
+local file = assert( io.open( "highlights.txt", "w" ) )
 for rating, t in pairs( highlights ) do
   if ( hasValue( ratingsRelevant, rating ) ) then
     for i, post in pairs( t ) do
       if ( i == 1 ) then
-        print( rating .. ": " )
+        file:write( rating .. ": " .. "\n" )
       end
-      print( post.userinfo.username .. " posted:" )
-      print( i .. " (x" .. post.postRatings[ rating ] .. "): " .. post.link )
+      file:write( post.userinfo.username .. " posted:" .. "\n" )
+      file:write( i .. " (x" .. post.postRatings[ rating ] .. "): " .. post.link .. "\n" )
     end
-    print( "\n" )
+    file:write( "\n" )
   end
 end
+file:close()
