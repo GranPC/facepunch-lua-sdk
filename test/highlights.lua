@@ -1,7 +1,7 @@
 -- dumps a given amount of the most notable posts by rating in a thread
 -- usage: lua test\highlights.lua
 
--- Andrew; In this test, we want the top 10 highlights from WAYWO December 2011
+-- Andrew; In this test, we want the top 10 highlights from WAYWO March 2012
 -- per rating. Let's dump the top 25 instead, because we may have some
 -- non-content posts
 local highlightsSize  = 25
@@ -10,7 +10,7 @@ local ratingsRelevant = {
   "Artistic",
   "Winner"
 }
-local threadID        = 1160420
+local threadID        = 1167397
 
 local facepunch = require( "facepunch" )
 local thread    = facepunch.thread
