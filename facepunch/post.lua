@@ -7,6 +7,8 @@
 -------------------------------------------------------------------------------
 local error = error
 local facepunch = require( "facepunch" )
+local http = require( "facepunch.http" )
+local session = require( "facepunch.session" )
 local setmetatable = setmetatable
 
 module( "facepunch.post" )
@@ -105,7 +107,7 @@ function post:rate( rating, securityToken )
 		-- Securitytoken
 		"&securitytoken=" .. ( securityToken or "guest" )
 		
-		local r, c = facepunch.http.post( facepunch.rootURL .. "/" .. facepunch.ajaxPage, postFields )
+		local r, c = http.post( facepunch.rootURL .. "/" .. facepunch.ajaxPage, session.getActiveSession(), postFields )
 		return c == 200 and 0 or 1
 	else
 		return 1
