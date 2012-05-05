@@ -20,6 +20,13 @@ module( "facepunch.session" )
 logoutHashPattern = "<a href=\"login.php%?do=logout&amp;logouthash=(.-)\">"
 
 -------------------------------------------------------------------------------
+-- loginInvalidPattern
+-- Purpose: Pattern for detecting if you specified an invalid username or
+--			password for a given session
+-------------------------------------------------------------------------------
+loginInvalidPattern = "<div class=\"blockrow restore\">You have entered an invalid username or password."
+
+-------------------------------------------------------------------------------
 -- securityTokenPattern
 -- Purpose: Pattern for retrieving the session security token
 -------------------------------------------------------------------------------
@@ -138,6 +145,9 @@ function session:login()
 		"&vb_login_md5password_utf=" .. ""
 		
 		local r, c, cookie = facepunch.http.post( facepunch.rootURL .. "/" .. facepunch.loginPage .. "?do=login", nil, postFields )
+		if ( string.match( r, loginInvalidPattern ) ) then
+			return 2
+		end
 		if ( c == 200 ) then
 			self.cookie = cookie
 			return 0
